@@ -1,69 +1,65 @@
 package Vue;
 
 import Controleur.ClientControleur;
-import Modele.Client;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class LoginVue extends JFrame {
+public class enregistrement extends JFrame {
+    private JTextField nomField;
+    private JTextField prenomField;
     private JTextField emailField;
     private JPasswordField passwordField;
-    private JButton loginButton;
-    private JButton registerLink;
+    private JButton registerButton;
     private JLabel messageLabel;
 
     private ClientControleur controleur;
 
-    public LoginVue() {
+    public enregistrement() {
         controleur = new ClientControleur();
 
-        setTitle("Connexion - Boutique en ligne");
-        setSize(400, 250);
+        setTitle("Inscription - Boutique en ligne");
+        setSize(400, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel(new GridLayout(5, 1, 10, 10));
+        JPanel panel = new JPanel(new GridLayout(6, 1, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
+        nomField = new JTextField();
+        prenomField = new JTextField();
         emailField = new JTextField();
         passwordField = new JPasswordField();
-        loginButton = new JButton("Se connecter");
-        registerLink = new JButton("Je n'ai pas encore de compte");
+        registerButton = new JButton("S'inscrire");
         messageLabel = new JLabel("", SwingConstants.CENTER);
 
+        panel.add(new JLabel("Nom :"));
+        panel.add(nomField);
+        panel.add(new JLabel("Prénom :"));
+        panel.add(prenomField);
         panel.add(new JLabel("Email :"));
         panel.add(emailField);
         panel.add(new JLabel("Mot de passe :"));
         panel.add(passwordField);
-        panel.add(loginButton);
+        panel.add(registerButton);
 
         add(panel, BorderLayout.CENTER);
-        add(registerLink, BorderLayout.SOUTH);
         add(messageLabel, BorderLayout.NORTH);
 
-        // Connexion
-        loginButton.addActionListener(e -> {
+        registerButton.addActionListener(e -> {
+            String nom = nomField.getText();
+            String prenom = prenomField.getText();
             String email = emailField.getText();
             String mdp = new String(passwordField.getPassword());
 
-            Client client = controleur.connecterClient(email, mdp);
-            if (client != null) {
+            boolean succes = controleur.inscrireClient(nom, prenom, email, mdp, "nouveau");
+            if (succes) {
                 messageLabel.setForeground(Color.GREEN);
-                messageLabel.setText("✅ Vous êtes connectés !");
-                // Ici on pourrait ouvrir la vue principale
+                messageLabel.setText("✅ Inscription réussie !");
             } else {
                 messageLabel.setForeground(Color.RED);
-                messageLabel.setText("❌ L'email ou le mot de passe ne correspondent pas.");
+                messageLabel.setText("❌ Erreur lors de l'inscription.");
             }
-        });
-
-        // Inscription
-        registerLink.addActionListener(e -> {
-            this.dispose(); // Ferme la fenêtre actuelle
-            new enregistrement().afficher(); // Ouvre l'interface d'inscription
         });
     }
 

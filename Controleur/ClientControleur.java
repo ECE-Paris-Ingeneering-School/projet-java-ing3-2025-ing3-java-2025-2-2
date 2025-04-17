@@ -6,7 +6,7 @@ import dao.ClientDAO;
 /**
  * Contrôleur pour la gestion des clients
  */
-public class ClientControleur{
+public class ClientControleur {
     private ClientDAO clientDAO;
 
     public ClientControleur() {
@@ -16,13 +16,14 @@ public class ClientControleur{
     /**
      * Inscrit un nouveau client
      * @param nom Le nom du client
+     * @param prenom Le prénom du client
      * @param email L'email du client
      * @param mdp Le mot de passe
-     * @param typeClient Le type de client
+     * @param typeClient Le type de client (nouveau / ancien)
      * @return true si l'inscription a réussi
      */
-    public boolean inscrireClient(String nom, String email, String mdp, String typeClient) {
-        Client client = new Client(nom, email, mdp, typeClient);
+    public boolean inscrireClient(String nom, String prenom, String email, String mdp, String typeClient) {
+        Client client = new Client(nom, prenom, email, mdp, typeClient);
         return clientDAO.creer(client);
     }
 
@@ -40,5 +41,5 @@ public class ClientControleur{
         return null;
     }
 
-    // Autres méthodes de gestion des clients
+    // Tu peux ensuite ajouter : afficherHistoriqueCommandes(), modifierMotDePasse(), etc.
 }
