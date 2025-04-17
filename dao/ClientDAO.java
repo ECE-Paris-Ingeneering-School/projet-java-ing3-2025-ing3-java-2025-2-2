@@ -3,16 +3,10 @@ package dao;
 import Modele.Client;
 import java.sql.*;
 
-/**
- * DAO pour la gestion des clients en base de données
- */
+
 public class ClientDAO {
 
-    /**
-     * Crée un nouveau client dans la base de données
-     * @param client Le client à créer
-     * @return true si la création a réussi
-     */
+
     public boolean creer(Client client) {
         String sql = "INSERT INTO Client (nom, prenom, email, mot_de_passe, type_client) VALUES (?, ?, ?, ?, ?)";
 
@@ -41,11 +35,6 @@ public class ClientDAO {
         return false;
     }
 
-    /**
-     * Trouve un client par son email
-     * @param email L'email du client
-     * @return Le client trouvé ou null
-     */
     public Client trouverParEmail(String email) {
         String sql = "SELECT * FROM Client WHERE email = ?";
         Client client = null;
@@ -73,5 +62,4 @@ public class ClientDAO {
         return client;
     }
 
-    // Tu pourras aussi ajouter : miseAJour(Client), supprimer(id), trouverParId(id), etc.
 }

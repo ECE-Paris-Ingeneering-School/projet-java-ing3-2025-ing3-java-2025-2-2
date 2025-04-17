@@ -45,20 +45,26 @@ public class LoginVue extends JFrame {
         add(messageLabel, BorderLayout.NORTH);
 
         // Connexion
-        loginButton.addActionListener(e -> {
-            String email = emailField.getText();
-            String mdp = new String(passwordField.getPassword());
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String email = emailField.getText();
+                String password = new String(passwordField.getPassword());
 
-            Client client = controleur.connecterClient(email, mdp);
-            if (client != null) {
-                messageLabel.setForeground(Color.GREEN);
-                messageLabel.setText("✅ Vous êtes connectés !");
-                // Ici on pourrait ouvrir la vue principale
-            } else {
-                messageLabel.setForeground(Color.RED);
-                messageLabel.setText("❌ L'email ou le mot de passe ne correspondent pas.");
+                ClientControleur controller = new ClientControleur();
+                Client client = controller.connecterClient(email, password);
+
+                if (client != null) {
+                    JOptionPane.showMessageDialog(null, "Vous êtes connectés !");
+                    ArticleVue articleVue = new ArticleVue();
+                    articleVue.setVisible(true);
+                    dispose(); // ferme la fenêtre de connexion
+                } else {
+                    JOptionPane.showMessageDialog(null, "L'email ou le mot de passe ne correspondent pas.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
+
 
         // Inscription
         registerLink.addActionListener(e -> {

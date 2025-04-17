@@ -7,9 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * Vue pour l'inscription des clients
- */
+
 public class Inscription extends JFrame {
     private JTextField nomField;
     private JTextField prenomField;

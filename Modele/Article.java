@@ -7,14 +7,20 @@ public class Article {
     private double prix_unitaire;
     private double prix_vrac;
     private int qte_vrac;
+    private String marque;
 
-    public Article(int idArticle, String nom, String description, double prix_unitaire, double prix_vrac, int qte_vrac) {
+
+    public Article(int idArticle, String nom, String description, double prix_unitaire, double prix_vrac, int qte_vrac, String marque) {
         this.idArticle = idArticle;
         this.nom = nom;
         this.description = description;
         this.prix_unitaire = prix_unitaire;
         this.prix_vrac = prix_vrac;
         this.qte_vrac = qte_vrac;
+        this.marque = marque;
+    }
+    public String toString() {
+        return nom + " - " + marque + " - " + prix_unitaire + " €";
     }
 
     public int getIdArticle() {
@@ -52,5 +58,11 @@ public class Article {
     }
     public void setQte_vrac(int qte_vrac) {
         this.qte_vrac = qte_vrac;
+    }
+    public String getMarque() {
+        return marque;
+    }
+    public void setMarque(String marque) {
+        this.marque = marque;
     }
 }
