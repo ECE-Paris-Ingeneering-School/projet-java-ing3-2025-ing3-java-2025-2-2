@@ -2,95 +2,121 @@ package Vue;
 
 import Modele.Article;
 import dao.ArticleDAO;
+import Modele.Panier;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.List;
 
 public class ArticleDetailVue extends JFrame {
-
     public ArticleDetailVue(Article article) {
         setTitle("Détail de l'article");
         setSize(500, 600);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout(20, 20));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JPanel detailPanel = new JPanel();
+        detailPanel.setLayout(new BoxLayout(detailPanel, BoxLayout.Y_AXIS));
+        detailPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Image de l'article
-        JLabel imageLabel;
+        // Nom
+        JLabel nomLabel = new JLabel(article.getNom(), SwingConstants.CENTER);
+        nomLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        nomLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        detailPanel.add(nomLabel);
+
+        detailPanel.add(Box.createVerticalStrut(15));
+
+        // Image
         try {
             URL imgUrl = getClass().getClassLoader().getResource(article.getPhoto());
             if (imgUrl != null) {
                 ImageIcon imageIcon = new ImageIcon(imgUrl);
-                imageLabel = new JLabel(new ImageIcon(imageIcon.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH)));
+                Image img = imageIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                JLabel imageLabel = new JLabel(new ImageIcon(img));
+                imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                detailPanel.add(imageLabel);
             } else {
-                imageLabel = new JLabel("Image non trouvée");
-                imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                detailPanel.add(new JLabel("Image non trouvée", SwingConstants.CENTER));
             }
         } catch (Exception e) {
-            imageLabel = new JLabel("Erreur de chargement de l'image");
+            detailPanel.add(new JLabel("Erreur chargement image", SwingConstants.CENTER));
         }
-        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        mainPanel.add(imageLabel, BorderLayout.NORTH);
 
-        // Centre : Infos article
-        JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        detailPanel.add(Box.createVerticalStrut(10));
 
-        JLabel nomLabel = new JLabel(article.getNom());
-        nomLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        nomLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JLabel prixLabel = new JLabel(String.format("Prix unitaire : %.2f €", article.getPrix_unitaire()));
-        prixLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        prixLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JLabel descriptionLabel = new JLabel("<html><p style='width:300px'>" + article.getDescription() + "</p></html>");
-        descriptionLabel.setFont(new Font("Arial", Font.ITALIC, 14));
-        descriptionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JButton marqueButton = new JButton(article.getMarque().getNom());
-        marqueButton.setBorderPainted(false);
-        marqueButton.setContentAreaFilled(false);
-        marqueButton.setForeground(Color.BLUE);
-        marqueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        marqueButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        marqueButton.addActionListener(e -> {
+        // Marque (cliquable)
+        JButton marqueBtn = new JButton(article.getMarque().getNom());
+        marqueBtn.setBorderPainted(false);
+        marqueBtn.setContentAreaFilled(false);
+        marqueBtn.setForeground(Color.BLUE);
+        marqueBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        marqueBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        marqueBtn.addActionListener(e -> {
             List<Article> articlesParMarque = new ArticleDAO().getArticlesParMarque(article.getMarque().getIdMarque());
-            ArticleVue articleVue = new ArticleVue();
-            articleVue.afficherArticles(articlesParMarque);
-            this.dispose(); // ferme la fenêtre actuelle
+            ArticleVue vue = new ArticleVue();
+            vue.afficherArticles(articlesParMarque);
+            dispose();
+        });
+        detailPanel.add(marqueBtn);
+
+        detailPanel.add(Box.createVerticalStrut(10));
+
+        // Description
+        JTextArea description = new JTextArea(article.getDescription());
+        description.setLineWrap(true);
+        description.setWrapStyleWord(true);
+        description.setEditable(false);
+        description.setBackground(detailPanel.getBackground());
+        detailPanel.add(description);
+
+        detailPanel.add(Box.createVerticalStrut(10));
+
+        // Prix
+        JLabel prixLabel = new JLabel("Prix : " + article.getPrix_unitaire() + " €");
+        prixLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        prixLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        detailPanel.add(prixLabel);
+
+        detailPanel.add(Box.createVerticalStrut(15));
+
+        // Sélection quantité
+        JPanel quantitePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton moinsBtn = new JButton("-");
+        JLabel quantiteLabel = new JLabel("1");
+        JButton plusBtn = new JButton("+");
+        quantitePanel.add(moinsBtn);
+        quantitePanel.add(quantiteLabel);
+        quantitePanel.add(plusBtn);
+        detailPanel.add(quantitePanel);
+
+        final int[] quantite = {1};
+        moinsBtn.addActionListener(e -> {
+            if (quantite[0] > 1) {
+                quantite[0]--;
+                quantiteLabel.setText(String.valueOf(quantite[0]));
+            }
+        });
+        plusBtn.addActionListener(e -> {
+            quantite[0]++;
+            quantiteLabel.setText(String.valueOf(quantite[0]));
         });
 
-        infoPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        infoPanel.add(nomLabel);
-        infoPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        infoPanel.add(prixLabel);
-        infoPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        infoPanel.add(descriptionLabel);
-        infoPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        infoPanel.add(marqueButton);
+        detailPanel.add(Box.createVerticalStrut(10));
 
-        mainPanel.add(infoPanel, BorderLayout.CENTER);
-
-        // Sud : Ajouter au panier
+        // Bouton Ajouter au panier
         JButton ajouterPanierBtn = new JButton("Ajouter au panier");
-        ajouterPanierBtn.setPreferredSize(new Dimension(200, 40));
         ajouterPanierBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         ajouterPanierBtn.addActionListener(e -> {
-            // Implémenter la logique panier ici
-            JOptionPane.showMessageDialog(this, "Ajouté au panier !");
+            Panier.getInstance().ajouterArticle(article, quantite[0]);
+            JOptionPane.showMessageDialog(this, quantite[0] + " article(s) ajouté(s) au panier !");
         });
 
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.add(ajouterPanierBtn);
-        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+        detailPanel.add(ajouterPanierBtn);
 
-        add(mainPanel);
+        add(detailPanel);
+        setVisible(true);
     }
 }
