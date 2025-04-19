@@ -72,14 +72,34 @@ public class ArticleFormDialog extends JDialog {
 
         saveButton.addActionListener(e -> {
             try {
-                // On peut ajouter de la validation ici
+                // Validation des champs obligatoires
+                if (nomField.getText().trim().isEmpty()) {
+                    throw new Exception("Le nom est obligatoire");
+                }
+                if (prixUnitaireField.getText().trim().isEmpty()) {
+                    throw new Exception("Le prix unitaire est obligatoire");
+                }
+
+                // Validation des nombres
+                Double.parseDouble(prixUnitaireField.getText());
+                if (!prixVracField.getText().trim().isEmpty()) {
+                    Double.parseDouble(prixVracField.getText());
+                }
+                if (!quantiteVracField.getText().trim().isEmpty()) {
+                    Integer.parseInt(quantiteVracField.getText());
+                }
+                if (!idMarqueField.getText().trim().isEmpty()) {
+                    Integer.parseInt(idMarqueField.getText());
+                }
+
                 validated = true;
                 dispose();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Veuillez entrer des valeurs numériques valides", "Erreur de format", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Erreur lors de la validation : " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
             }
         });
-
         cancelButton.addActionListener(e -> {
             validated = false;
             dispose();

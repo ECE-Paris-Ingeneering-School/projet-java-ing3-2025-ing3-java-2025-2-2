@@ -112,4 +112,94 @@ public class ArticleDAO {
 
         return articles;
     }
+    public boolean ajouterArticle(Article article) {
+        String sql = "INSERT INTO article (nom, description, prix_unitaire, prix_vrac, quantite_vrac, id_marque, photo) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = ConnexionBDD.getConnexion();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setString(1, article.getNom());
+            stmt.setString(2, article.getDescription());
+            stmt.setDouble(3, article.getPrix_unitaire());
+            stmt.setDouble(4, article.getPrix_vrac());
+            stmt.setInt(5, article.getQte_vrac());
+            stmt.setInt(6, article.getMarque().getIdMarque());
+            stmt.setString(7, article.getPhoto());
+
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de l'ajout de l'article : " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean modifierArticle(Article article) {
+        String sql = "UPDATE article SET nom = ?, description = ?, prix_unitaire = ?, prix_vrac = ?, quantite_vrac = ?, id_marque = ?, photo = ? WHERE id_article = ?";
+
+        try (Connection conn = ConnexionBDD.getConnexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, article.getNom());
+            stmt.setString(2, article.getDescription());
+            stmt.setDouble(3, article.getPrix_unitaire());
+            stmt.setDouble(4, article.getPrix_vrac());
+            stmt.setInt(5, article.getQte_vrac());
+            stmt.setInt(6, article.getMarque().getIdMarque());
+            stmt.setString(7, article.getPhoto());
+            stmt.setInt(8, article.getIdArticle());
+
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la modification de l'article : " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean supprimerArticle(int idArticle) {
+        String sql = "DELETE FROM article WHERE id_article = ?";
+
+        try (Connection conn = ConnexionBDD.getConnexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idArticle);
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la suppression de l'article : " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Article trouverParId(int idArticle) {
+        String sql = "SELECT a.*, m.nom AS nom_marque FROM article a LEFT JOIN marque m ON a.id_marque = m.id_marque WHERE a.id_article = ?";
+
+        try (Connection conn = ConnexionBDD.getConnexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idArticle);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Marque marque = new Marque(rs.getInt("id_marque"), rs.getString("nom_marque"));
+                return new Article(
+                        rs.getInt("id_article"),
+                        rs.getString("nom"),
+                        rs.getString("description"),
+                        rs.getDouble("prix_unitaire"),
+                        rs.getDouble("prix_vrac"),
+                        rs.getInt("quantite_vrac"),
+                        marque,
+                        rs.getString("photo")
+                );
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche de l'article : " + e.getMessage());
+        }
+        return null;
+    }
 }
