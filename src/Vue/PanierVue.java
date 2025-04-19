@@ -2,47 +2,67 @@ package Vue;
 
 import Modele.Article;
 import Modele.Panier;
+import dao.PanierDAO;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
 
 public class PanierVue extends JFrame {
-    public PanierVue() {
+
+    public PanierVue(int idClient) {
         setTitle("Mon Panier");
         setSize(400, 500);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+        // Panneau principal
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        Map<Article, Integer> articles = Panier.getInstance().getArticles();
+        // Récupération du panier depuis la base
+        Map<Article, Integer> panier = PanierDAO.getPanier(idClient);
+        Panier.getInstance().setArticles(panier); // mettre à jour le panier en mémoire
 
-        if (articles.isEmpty()) {
+        if (panier.isEmpty()) {
             panel.add(new JLabel("Votre panier est vide."));
         } else {
-            for (Map.Entry<Article, Integer> entry : articles.entrySet()) {
+            double total = 0.0;
+
+            for (Map.Entry<Article, Integer> entry : panier.entrySet()) {
                 Article article = entry.getKey();
                 int quantite = entry.getValue();
 
+                double prixTotalArticle = article.calculerPrixTotal(quantite);
+                total += prixTotalArticle;
+
                 JPanel ligne = new JPanel(new BorderLayout());
                 ligne.add(new JLabel(article.getNom() + " x" + quantite), BorderLayout.WEST);
-                ligne.add(new JLabel(String.format("%.2f €", article.getPrix_unitaire() * quantite)), BorderLayout.EAST);
+                ligne.add(new JLabel(String.format("%.2f €", prixTotalArticle)), BorderLayout.EAST);
 
                 panel.add(ligne);
             }
 
-            JLabel totalLabel = new JLabel("Total : " + String.format("%.2f €", Panier.getInstance().getTotal()), SwingConstants.CENTER);
+            JLabel totalLabel = new JLabel("Total : " + String.format("%.2f €", total), SwingConstants.CENTER);
             totalLabel.setFont(new Font("Arial", Font.BOLD, 16));
             panel.add(Box.createVerticalStrut(10));
             panel.add(totalLabel);
         }
 
+        // Bouton pour vider le panier
         JButton viderBtn = new JButton("Vider le panier");
         viderBtn.addActionListener(e -> {
-            Panier.getInstance().viderPanier();
-            dispose();
-            new PanierVue().setVisible(true);
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Voulez-vous vraiment vider votre panier ?",
+                    "Confirmation",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                Panier.getInstance().viderPanier();     // Vide en mémoire
+                PanierDAO.viderPanier(idClient);        // Vide en BDD
+                dispose();                              // Ferme la fenêtre actuelle
+                new PanierVue(idClient);                // Recharge la vue vide
+            }
         });
 
         panel.add(Box.createVerticalStrut(20));

@@ -1,8 +1,9 @@
 package Vue;
 
 import Modele.Article;
-import dao.ArticleDAO;
 import Modele.Panier;
+import dao.ArticleDAO;
+import dao.PanierDAO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,11 @@ import java.net.URL;
 import java.util.List;
 
 public class ArticleDetailVue extends JFrame {
-    public ArticleDetailVue(Article article) {
+    private int idClient;
+
+    public ArticleDetailVue(Article article, int idClient) {
+        this.idClient = idClient;
+
         setTitle("Détail de l'article");
         setSize(500, 600);
         setLocationRelativeTo(null);
@@ -56,7 +61,7 @@ public class ArticleDetailVue extends JFrame {
         marqueBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         marqueBtn.addActionListener(e -> {
             List<Article> articlesParMarque = new ArticleDAO().getArticlesParMarque(article.getMarque().getIdMarque());
-            ArticleVue vue = new ArticleVue();
+            ArticleVue vue = new ArticleVue(idClient);
             vue.afficherArticles(articlesParMarque);
             dispose();
         });
@@ -110,7 +115,8 @@ public class ArticleDetailVue extends JFrame {
         JButton ajouterPanierBtn = new JButton("Ajouter au panier");
         ajouterPanierBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         ajouterPanierBtn.addActionListener(e -> {
-            Panier.getInstance().ajouterArticle(article, quantite[0]);
+            Panier.getInstance().ajouterArticle(article, quantite[0]); // Mémoire
+            PanierDAO.ajouterArticle(idClient, article.getIdArticle(), quantite[0]); // BDD
             JOptionPane.showMessageDialog(this, quantite[0] + " article(s) ajouté(s) au panier !");
         });
 
