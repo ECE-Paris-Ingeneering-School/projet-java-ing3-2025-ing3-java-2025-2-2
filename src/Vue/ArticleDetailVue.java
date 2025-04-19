@@ -7,7 +7,6 @@ import dao.PanierDAO;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.List;
 
@@ -79,13 +78,18 @@ public class ArticleDetailVue extends JFrame {
 
         detailPanel.add(Box.createVerticalStrut(10));
 
-        // Prix
+        // Prix unitaire
         final double prixUnitaire = article.getPrix_unitaire();
-        JLabel prixLabel = new JLabel("Prix : " + prixUnitaire + " €");
+        JLabel prixUnitaireLabel = new JLabel("Prix unitaire : " + String.format("%.2f", prixUnitaire) + " €");
+        prixUnitaireLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        prixUnitaireLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        detailPanel.add(prixUnitaireLabel);
 
-        prixLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        prixLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        detailPanel.add(prixLabel);
+        // Prix total (dépendant de la quantité)
+        JLabel prixTotalLabel = new JLabel("Prix total : " + String.format("%.2f", prixUnitaire) + " €");
+        prixTotalLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        prixTotalLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        detailPanel.add(prixTotalLabel);
 
         detailPanel.add(Box.createVerticalStrut(15));
 
@@ -104,17 +108,15 @@ public class ArticleDetailVue extends JFrame {
             if (quantite[0] > 1) {
                 quantite[0]--;
                 quantiteLabel.setText(String.valueOf(quantite[0]));
-                prixLabel.setText("Prix : " + (prixUnitaire * quantite[0]) + " €");
+                prixTotalLabel.setText("Prix total : " + String.format("%.2f", prixUnitaire * quantite[0]) + " €");
             }
         });
-
 
         plusBtn.addActionListener(e -> {
             quantite[0]++;
             quantiteLabel.setText(String.valueOf(quantite[0]));
-            prixLabel.setText("Prix : " + (prixUnitaire * quantite[0]) + " €");
+            prixTotalLabel.setText("Prix total : " + String.format("%.2f", prixUnitaire * quantite[0]) + " €");
         });
-
 
         detailPanel.add(Box.createVerticalStrut(10));
 
