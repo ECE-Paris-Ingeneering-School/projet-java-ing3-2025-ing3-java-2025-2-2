@@ -80,7 +80,9 @@ public class ArticleDetailVue extends JFrame {
         detailPanel.add(Box.createVerticalStrut(10));
 
         // Prix
-        JLabel prixLabel = new JLabel("Prix : " + article.getPrix_unitaire() + " €");
+        final double prixUnitaire = article.getPrix_unitaire();
+        JLabel prixLabel = new JLabel("Prix : " + prixUnitaire + " €");
+
         prixLabel.setFont(new Font("Arial", Font.BOLD, 16));
         prixLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         detailPanel.add(prixLabel);
@@ -102,12 +104,17 @@ public class ArticleDetailVue extends JFrame {
             if (quantite[0] > 1) {
                 quantite[0]--;
                 quantiteLabel.setText(String.valueOf(quantite[0]));
+                prixLabel.setText("Prix : " + (prixUnitaire * quantite[0]) + " €");
             }
         });
+
+
         plusBtn.addActionListener(e -> {
             quantite[0]++;
             quantiteLabel.setText(String.valueOf(quantite[0]));
+            prixLabel.setText("Prix : " + (prixUnitaire * quantite[0]) + " €");
         });
+
 
         detailPanel.add(Box.createVerticalStrut(10));
 
