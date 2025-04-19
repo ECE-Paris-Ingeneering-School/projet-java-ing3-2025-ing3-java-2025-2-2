@@ -3,6 +3,7 @@ package Vue;
 import Modele.Article;
 import Modele.Panier;
 import dao.PanierDAO;
+import dao.CommandeDAO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -67,6 +68,35 @@ public class PanierVue extends JFrame {
 
         panel.add(Box.createVerticalStrut(20));
         panel.add(viderBtn);
+
+        // Bouton valider commande
+        JButton validerBtn = new JButton("Valider la commande");
+        validerBtn.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Souhaitez-vous valider cette commande ?",
+                    "Confirmation",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                Map<Article, Integer> panierMap = Panier.getInstance().getArticles();
+                double total = Panier.getInstance().getTotal();
+                CommandeDAO commandeDAO = new CommandeDAO();
+                boolean success = commandeDAO.validerCommande(idClient, panierMap, total);
+
+                if (success) {
+                    Panier.getInstance().viderPanier();
+                    PanierDAO.viderPanier(idClient);
+                    JOptionPane.showMessageDialog(this, "Commande validée avec succès !");
+                    dispose(); // Fermer la vue panier
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erreur lors de la validation.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        panel.add(Box.createVerticalStrut(10));
+        panel.add(validerBtn);
+
 
         JScrollPane scrollPane = new JScrollPane(panel);
         add(scrollPane);

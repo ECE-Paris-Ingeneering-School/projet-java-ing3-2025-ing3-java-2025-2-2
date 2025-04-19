@@ -28,6 +28,10 @@ public class ArticleVue extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton historiqueBtn = new JButton("Commandes");
+        historiqueBtn.addActionListener(e -> new HistoriqueCommandeVue(idClient));
+        topPanel.add(historiqueBtn);
+
 
         searchField = new JTextField(20);
         searchButton = new JButton("Rechercher");
@@ -36,6 +40,9 @@ public class ArticleVue extends JFrame {
         topPanel.add(searchField);
         topPanel.add(searchButton);
         topPanel.add(panierButton);
+        topPanel.add(historiqueBtn); // 👈 ICI
+
+        historiqueBtn.addActionListener(e -> new HistoriqueCommandeVue(idClient));
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
 
