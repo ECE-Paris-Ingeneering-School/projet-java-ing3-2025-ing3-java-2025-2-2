@@ -86,10 +86,9 @@ public class ArticleVue extends JFrame {
             historiqueItem.addActionListener(e -> new HistoriqueCommandeVue(idClient));
             deconnexionItem.addActionListener(e -> {
                 Session.deconnecter();
-                new ArticleVue(-1);
+                new ArticleVue(-1).setVisible(true);
                 dispose();
             });
-
         } else {
             JMenuItem seConnecterItem = new JMenuItem("Se connecter");
             compteMenu.add(seConnecterItem);
@@ -117,6 +116,7 @@ public class ArticleVue extends JFrame {
         panierButton.addActionListener(e -> {
             if (Session.estAncienClient()) {
                 new PanierVue(idClient).setVisible(true);
+                dispose();
             } else {
                 afficherConnexionRequise("le panier");
             }
@@ -164,7 +164,8 @@ public class ArticleVue extends JFrame {
 
             panel.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    new ArticleDetailVue(article, idClient);
+                    new ArticleDetailVue(article, idClient).setVisible(true);
+                    dispose();
                 }
             });
 
