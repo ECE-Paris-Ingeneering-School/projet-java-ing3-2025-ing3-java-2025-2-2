@@ -38,6 +38,7 @@ public class ProfilVue extends JFrame {
 
         mainPanel.add(Box.createVerticalStrut(20));
 
+
         if (client != null) {
             JPanel infoPanel = new JPanel(new GridLayout(5, 2, 10, 10));
             infoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));

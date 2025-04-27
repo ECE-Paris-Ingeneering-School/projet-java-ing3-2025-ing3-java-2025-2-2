@@ -31,6 +31,7 @@ public class CommandeArticle {
         return prixTotal;
     }
 
+
     public void setPrixTotal(double prixTotal) {
         this.prixTotal = prixTotal;
     }

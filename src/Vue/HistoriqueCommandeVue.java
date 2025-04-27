@@ -114,3 +114,4 @@ public class HistoriqueCommandeVue extends JFrame {
         setVisible(true);
     }
 }
+
