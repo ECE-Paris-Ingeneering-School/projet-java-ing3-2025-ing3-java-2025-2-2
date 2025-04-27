@@ -7,18 +7,21 @@ import dao.ConnexionBDD;
 import Modele.Session;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class LoginVue extends JFrame {
     private JTextField emailField;
     private JPasswordField passwordField;
     private JButton loginButton;
-    private JButton registerLink;
+    private JLabel registerLink;
     private JButton adminLink;
     private JLabel messageLabel;
     private JLabel titleLabel;
@@ -37,36 +40,70 @@ public class LoginVue extends JFrame {
         titleLabel.setPreferredSize(new Dimension(1000, 60));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 150, 20, 150));
 
-        JPanel panel = new JPanel(new GridLayout(5, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(40, 150, 20, 150));
-
-
+        // Champs plus grands
         emailField = new JTextField(25);
         passwordField = new JPasswordField(25);
+        emailField.setPreferredSize(new Dimension(300, 30));
+        passwordField.setPreferredSize(new Dimension(300, 30));
+
         loginButton = new JButton("Se connecter");
-        registerLink = new JButton("Je n'ai pas encore de compte");
+        loginButton.setPreferredSize(new Dimension(200, 40));
+        loginButton.setFont(new Font("Arial", Font.BOLD, 14));
+
+        // Lien d'inscription stylisé
+        registerLink = new JLabel("<html><u>Je n'ai pas encore de compte</u></html>");
+        registerLink.setForeground(Color.BLUE);
+        registerLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         adminLink = new JButton("Connexion Admin");
+        adminLink.setPreferredSize(new Dimension(200, 30));
         messageLabel = new JLabel("", SwingConstants.CENTER);
 
-        loginButton.setPreferredSize(new Dimension(100, 20));
-        registerLink.setPreferredSize(new Dimension(100, 20));
-        adminLink.setPreferredSize(new Dimension(100, 20));
+        gbc.insets = new Insets(5, 5, 5, 5); // Espacement entre les composants
 
-        panel.add(new JLabel("Email :"));
-        panel.add(emailField);
-        panel.add(new JLabel("Mot de passe :"));
-        panel.add(passwordField);
-        panel.add(loginButton);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(new JLabel("Email :"), gbc);
 
-        add(titleLabel, BorderLayout.NORTH);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(emailField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(new JLabel("Mot de passe :"), gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panel.add(passwordField, gbc);
+
+        // Ajout du lien d'inscription
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.insets = new Insets(15, 5, 5, 5); // Plus d'espace au-dessus
+        panel.add(registerLink, gbc);
+
+        // Bouton de connexion avec plus d'espace au-dessus
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.insets = new Insets(20, 5, 5, 5); // Encore plus d'espace
+        panel.add(loginButton, gbc);
+
+        JPanel northPanel = new JPanel(new BorderLayout());
+        northPanel.add(titleLabel, BorderLayout.CENTER);
+        northPanel.add(messageLabel, BorderLayout.SOUTH);
+        add(northPanel, BorderLayout.NORTH);
+
         add(panel, BorderLayout.CENTER);
 
-        JPanel bottomPanel = new JPanel(new GridLayout(2, 1));
-        bottomPanel.add(registerLink);
+        JPanel bottomPanel = new JPanel();
         bottomPanel.add(adminLink);
         add(bottomPanel, BorderLayout.SOUTH);
-        add(messageLabel, BorderLayout.NORTH);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -94,9 +131,9 @@ public class LoginVue extends JFrame {
             }
         });
 
-        registerLink.addActionListener(new ActionListener() {
+        registerLink.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 dispose();
                 new EnregistrementVue().afficher();
             }
