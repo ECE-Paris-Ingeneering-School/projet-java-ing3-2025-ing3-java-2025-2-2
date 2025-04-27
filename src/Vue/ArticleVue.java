@@ -3,11 +3,9 @@ package Vue;
 import Modele.Article;
 import Modele.Session;
 import dao.ArticleDAO;
-import Controleur.PanierControleur;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.List;
 
@@ -16,12 +14,11 @@ public class ArticleVue extends JFrame {
     private JTextField searchField;
     private JButton searchButton;
     private JButton panierButton;
-    private JMenu compteMenu;
     private JButton catalogueButton;
+    private JButton compteButton;
     private int idClient;
 
     public ArticleVue(int idClient) {
-
         this.idClient = idClient;
         setTitle("Catalogue d'articles");
         setSize(1000, 600);
@@ -35,10 +32,34 @@ public class ArticleVue extends JFrame {
         searchField = new JTextField(20);
         searchButton = new JButton("Rechercher");
         panierButton = new JButton("Panier");
+        compteButton = new JButton("Compte");
+
+        Color greenColor = new Color(34, 139, 34);
+
+        catalogueButton.setBackground(greenColor);
+        searchButton.setBackground(greenColor);
+        panierButton.setBackground(greenColor);
+        compteButton.setBackground(greenColor);
+
+        catalogueButton.setForeground(Color.WHITE);
+        searchButton.setForeground(Color.WHITE);
+        panierButton.setForeground(Color.WHITE);
+        compteButton.setForeground(Color.WHITE);
 
         catalogueButton.setFocusPainted(false);
         searchButton.setFocusPainted(false);
         panierButton.setFocusPainted(false);
+        compteButton.setFocusPainted(false);
+
+        catalogueButton.setBorderPainted(false);
+        searchButton.setBorderPainted(false);
+        panierButton.setBorderPainted(false);
+        compteButton.setBorderPainted(false);
+
+        catalogueButton.setOpaque(true);
+        searchButton.setOpaque(true);
+        panierButton.setOpaque(true);
+        compteButton.setOpaque(true);
 
         menuBar.add(catalogueButton);
         menuBar.add(Box.createHorizontalStrut(10));
@@ -47,9 +68,11 @@ public class ArticleVue extends JFrame {
         menuBar.add(Box.createHorizontalStrut(10));
         menuBar.add(panierButton);
         menuBar.add(Box.createHorizontalGlue());
+        menuBar.add(compteButton);
+        setJMenuBar(menuBar);
 
-        // Création du menu "Compte"
-        compteMenu = new JMenu("Compte");
+        JPopupMenu compteMenu = new JPopupMenu();
+
         if (Session.estAncienClient()) {
             JMenuItem profilItem = new JMenuItem("Informations personnelles");
             JMenuItem historiqueItem = new JMenuItem("Historique des commandes");
@@ -59,7 +82,6 @@ public class ArticleVue extends JFrame {
             compteMenu.add(historiqueItem);
             compteMenu.add(deconnexionItem);
 
-            // Actions des éléments du menu
             profilItem.addActionListener(e -> new ProfilVue(idClient).setVisible(true));
             historiqueItem.addActionListener(e -> new HistoriqueCommandeVue(idClient));
             deconnexionItem.addActionListener(e -> {
@@ -78,13 +100,11 @@ public class ArticleVue extends JFrame {
             });
         }
 
-        menuBar.add(compteMenu);
-        setJMenuBar(menuBar);
+        compteButton.addActionListener(e -> compteMenu.show(compteButton, 0, compteButton.getHeight()));
 
         articlesPanel = new JPanel(new GridLayout(0, 3, 20, 20));
         JScrollPane scrollPane = new JScrollPane(articlesPanel);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
         add(scrollPane, BorderLayout.CENTER);
 
         afficherArticles(new ArticleDAO().listerArticles());
@@ -102,9 +122,7 @@ public class ArticleVue extends JFrame {
             }
         });
 
-        catalogueButton.addActionListener(e -> {
-            afficherArticles(new ArticleDAO().listerArticles());
-        });
+        catalogueButton.addActionListener(e -> afficherArticles(new ArticleDAO().listerArticles()));
 
         setVisible(true);
     }

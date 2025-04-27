@@ -15,9 +15,9 @@ public class FenetrePaiement extends JFrame {
     public FenetrePaiement(Runnable onPaiementValide) {
         setTitle("Paiement sécurisé");
         initComponents(onPaiementValide);
-        pack(); // Ajuste automatiquement après avoir ajouté tous les composants
-        setSize(450, 350); // Définit une bonne taille de base
-        setLocationRelativeTo(null); // Centre la fenêtre
+        pack();
+        setSize(450, 350);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
@@ -44,7 +44,7 @@ public class FenetrePaiement extends JFrame {
         champsPanel.add(new JLabel("Numéro de carte:"), gbc);
         gbc.gridx = 1;
         numeroCarteField = new JTextField();
-        numeroCarteField.setPreferredSize(new Dimension(200, 30)); // Fixe la taille
+        numeroCarteField.setPreferredSize(new Dimension(200, 30));
         champsPanel.add(numeroCarteField, gbc);
 
         gbc.gridx = 0;
@@ -52,7 +52,7 @@ public class FenetrePaiement extends JFrame {
         champsPanel.add(new JLabel("Expiration (MM/AA):"), gbc);
         gbc.gridx = 1;
         expirationField = new JTextField();
-        expirationField.setPreferredSize(new Dimension(200, 30)); // Fixe la taille
+        expirationField.setPreferredSize(new Dimension(200, 30));
         champsPanel.add(expirationField, gbc);
 
         gbc.gridx = 0;
@@ -60,7 +60,7 @@ public class FenetrePaiement extends JFrame {
         champsPanel.add(new JLabel("CVV:"), gbc);
         gbc.gridx = 1;
         cvvField = new JTextField();
-        cvvField.setPreferredSize(new Dimension(200, 30)); // Fixe la taille
+        cvvField.setPreferredSize(new Dimension(200, 30));
         champsPanel.add(cvvField, gbc);
 
         mainPanel.add(champsPanel, BorderLayout.CENTER);
@@ -68,7 +68,7 @@ public class FenetrePaiement extends JFrame {
         // Bas - Bouton Payer
         payerButton = new JButton("Payer");
         payerButton.setFont(new Font("Arial", Font.BOLD, 14));
-        payerButton.setBackground(new Color(76, 175, 80)); // Vert
+        payerButton.setBackground(new Color(76, 175, 80));
         payerButton.setForeground(Color.WHITE);
         payerButton.setFocusPainted(false);
         payerButton.setPreferredSize(new Dimension(120, 40));
@@ -76,6 +76,18 @@ public class FenetrePaiement extends JFrame {
         payerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String numeroCarte = numeroCarteField.getText().trim();
+                String expiration = expirationField.getText().trim();
+                String cvv = cvvField.getText().trim();
+
+                // Vérification basique : 16 chiffres pour la carte
+                if (numeroCarte.length() != 16 || !numeroCarte.matches("\\d{16}")) {
+                    JOptionPane.showMessageDialog(FenetrePaiement.this, "Paiement refusé : numéro de carte invalide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    return; // Ne continue pas
+                }
+
+                // (Optionnel : tu pourrais aussi vérifier expiration et cvv si tu veux)
+
                 if (onPaiementValide != null) {
                     onPaiementValide.run();
                 }
