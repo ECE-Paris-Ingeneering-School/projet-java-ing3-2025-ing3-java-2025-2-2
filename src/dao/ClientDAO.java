@@ -3,10 +3,20 @@ package dao;
 import Modele.Client;
 import java.sql.*;
 
-
+/**
+ * Classe ClientDAO
+ * Gère l'accès aux données pour les opérations liées aux clients dans la base de données
+ * Suivant le modèle DAO pour bien séparer la logique d'accès aux données
+ * Source : <a href="https://www.baeldung.com/java-dao-pattern">Baeldung - DAO Pattern</a>
+ * @author Martin
+ */
 public class ClientDAO {
 
-
+    /**
+     * Insère un nouveau client dans la base de données
+     * @param client le client à ajouter
+     * @return true si l'ajout est réussi, false sinon
+     */
     public boolean creer(Client client) {
         String sql = "INSERT INTO Client (nom, prenom, email, mot_de_passe, type_client) VALUES (?, ?, ?, ?, ?)";
 
@@ -35,6 +45,11 @@ public class ClientDAO {
         return false;
     }
 
+    /**
+     * Trouve un client à partir de son adresse email
+     * @param email adresse email du client
+     * @return l'objet Client correspondant ou null si non trouvé
+     */
     public Client trouverParEmail(String email) {
         String sql = "SELECT * FROM Client WHERE email = ?";
         Client client = null;
@@ -62,10 +77,16 @@ public class ClientDAO {
         return client;
     }
 
+    /**
+     * Met à jour le type d'un client pour le passer à "ancien"
+     * @param client le client concerné
+     * @return true si la mise à jour est réussie, false sinon
+     */
     public boolean basculerEnAncien(Client client) {
         String sql = "UPDATE Client SET type_client = 'ancien' WHERE id_client = ?";
         try (Connection conn = ConnexionBDD.getConnexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setInt(1, client.getIdClient());
             int rows = stmt.executeUpdate();
             return rows > 0;
@@ -75,6 +96,11 @@ public class ClientDAO {
         }
     }
 
+    /**
+     * Trouve un client par son identifiant
+     * @param idClient identifiant du client
+     * @return l'objet Client correspondant ou null si non trouvé
+     */
     public Client trouverParId(int idClient) {
         String sql = "SELECT * FROM Client WHERE id_client = ?";
         Client client = null;
@@ -101,6 +127,12 @@ public class ClientDAO {
 
         return client;
     }
+
+    /**
+     * Met à jour les informations personnelles d'un client
+     * @param client le client avec les nouvelles informations
+     * @return true si la mise à jour est réussie, false sinon
+     */
     public boolean mettreAJourClient(Client client) {
         String query = "UPDATE client SET nom = ?, prenom = ?, email = ? WHERE id_client = ?";
         try (Connection conn = ConnexionBDD.getConnexion();
@@ -111,28 +143,12 @@ public class ClientDAO {
             ps.setString(3, client.getEmail());
             ps.setInt(4, client.getIdClient());
 
-            System.out.println("Requête SQL: " + query);
-            System.out.println("id_client: " + client.getIdClient());
-            System.out.println("Nom: " + client.getNom());
-            System.out.println("Prénom: " + client.getPrenom());
-            System.out.println("Email: " + client.getEmail());
-
             int rowsUpdated = ps.executeUpdate();
 
-            if (rowsUpdated > 0) {
-                System.out.println("Mise à jour réussie !");
-                return true;
-            } else {
-                System.err.println("Aucune ligne mise à jour. Vérifiez si le client avec cet ID existe.");
-                return false;
-            }
+            return rowsUpdated > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Erreur lors de la mise à jour du client : " + e.getMessage());
             return false;
         }
     }
-
-
-
-
 }

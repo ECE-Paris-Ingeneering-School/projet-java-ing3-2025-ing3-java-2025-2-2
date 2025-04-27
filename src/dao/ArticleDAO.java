@@ -7,8 +7,19 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe ArticleDAO
+ * Gère toutes les opérations d'accès aux données pour les articles du catalogue
+ * Suivant le pattern DAO pour séparer l'accès aux données du reste de l'application
+ * Source : <a href="https://www.baeldung.com/java-dao-pattern">Baeldung - DAO Pattern</a>
+ * @author Jean
+ */
 public class ArticleDAO {
 
+    /**
+     * Récupère tous les articles présents dans la base de données
+     * @return une liste d'objets Article
+     */
     public List<Article> listerArticles() {
         List<Article> articles = new ArrayList<>();
         String sql = "SELECT a.id_article, a.nom, a.description, a.prix_unitaire, a.prix_vrac, a.quantite_vrac, a.photo, m.id_marque, m.nom AS marque " +
@@ -40,6 +51,11 @@ public class ArticleDAO {
         return articles;
     }
 
+    /**
+     * Récupère tous les articles associés à une marque spécifique
+     * @param idMarque identifiant de la marque
+     * @return une liste d'articles correspondant à la marque
+     */
     public List<Article> getArticlesParMarque(int idMarque) {
         List<Article> articles = new ArrayList<>();
         String sql = "SELECT a.id_article, a.nom, a.description, a.prix_unitaire, a.prix_vrac, a.quantite_vrac, a.photo, m.id_marque, m.nom AS marque " +
@@ -74,9 +90,14 @@ public class ArticleDAO {
         return articles;
     }
 
+    /**
+     * Recherche des articles par mot-clé dans leur nom, description ou marque
+     * @param query chaîne de recherche
+     * @return une liste d'articles correspondants
+     */
     public List<Article> rechercherArticles(String query) {
         List<Article> articles = new ArrayList<>();
-        String searchQuery = "%" + query + "%";  // Utiliser des jokers pour faire correspondre n'importe quel texte
+        String searchQuery = "%" + query + "%";
 
         String sql = "SELECT a.id_article, a.nom, a.description, a.prix_unitaire, a.prix_vrac, a.quantite_vrac, a.photo, m.id_marque, m.nom AS marque " +
                 "FROM Article a LEFT JOIN Marque m ON a.id_marque = m.id_marque " +
@@ -112,6 +133,12 @@ public class ArticleDAO {
 
         return articles;
     }
+
+    /**
+     * Ajoute un nouvel article à la base de données
+     * @param article l'article à ajouter
+     * @return true si l'ajout est réussi, false sinon
+     */
     public boolean ajouterArticle(Article article) {
         String sql = "INSERT INTO article (nom, description, prix_unitaire, prix_vrac, quantite_vrac, id_marque, photo) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -135,6 +162,11 @@ public class ArticleDAO {
         }
     }
 
+    /**
+     * Modifie un article existant dans la base de données
+     * @param article l'article modifié
+     * @return true si la modification est réussie, false sinon
+     */
     public boolean modifierArticle(Article article) {
         String sql = "UPDATE article SET nom = ?, description = ?, prix_unitaire = ?, prix_vrac = ?, quantite_vrac = ?, id_marque = ?, photo = ? WHERE id_article = ?";
 
@@ -159,6 +191,11 @@ public class ArticleDAO {
         }
     }
 
+    /**
+     * Supprime un article de la base de données par son identifiant
+     * @param idArticle identifiant de l'article à supprimer
+     * @return true si la suppression est réussie, false sinon
+     */
     public boolean supprimerArticle(int idArticle) {
         String sql = "DELETE FROM article WHERE id_article = ?";
 
@@ -175,6 +212,11 @@ public class ArticleDAO {
         }
     }
 
+    /**
+     * Trouve un article en fonction de son identifiant
+     * @param idArticle identifiant de l'article recherché
+     * @return l'objet Article correspondant, ou null si non trouvé
+     */
     public Article trouverParId(int idArticle) {
         String sql = "SELECT a.*, m.nom AS nom_marque FROM article a LEFT JOIN marque m ON a.id_marque = m.id_marque WHERE a.id_article = ?";
 

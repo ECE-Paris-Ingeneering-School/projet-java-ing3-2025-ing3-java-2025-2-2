@@ -8,8 +8,22 @@ import java.util.ArrayList;
 import java.util.List;
 import Modele.Article;
 
+/**
+ * Classe CommandeArticleDAO
+ * Gère les opérations entre les commandes et les articles (relation commande-article)
+ * Implémente les actions CRUD sur la table de liaison commande_article
+ * Source : <a href="https://www.baeldung.com/java-dao-pattern">Baeldung - DAO Pattern</a>
+ * @author Quentin
+ */
 public class CommandeArticleDAO {
 
+    /**
+     * Insère une ligne dans la table commande_article
+     * @param idCommande identifiant de la commande
+     * @param article article concerné
+     * @param quantite quantité commandée de l'article
+     * @param prixTotal prix total pour cette ligne (quantité * prix unitaire ou vrac)
+     */
     public void insererCommandeArticle(int idCommande, Article article, int quantite, double prixTotal) {
         String sql = "INSERT INTO commande_article (id_commande, id_article, quantite, prix_total) VALUES (?, ?, ?, ?)";
 
@@ -27,6 +41,11 @@ public class CommandeArticleDAO {
         }
     }
 
+    /**
+     * Récupère tous les articles associés à une commande spécifique
+     * @param idCommande identifiant de la commande
+     * @return liste d'objets Article présents dans la commande
+     */
     public List<Article> getArticlesParCommande(int idCommande) {
         List<Article> articles = new ArrayList<>();
         String sql = "SELECT a.*, ca.quantite FROM commande_article ca " +
@@ -60,4 +79,3 @@ public class CommandeArticleDAO {
         return articles;
     }
 }
-

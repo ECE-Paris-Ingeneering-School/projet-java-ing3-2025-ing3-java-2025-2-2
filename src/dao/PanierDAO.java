@@ -7,11 +7,25 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Classe PanierDAO
+ * Gère l'accès aux données pour les opérations liées aux paniers clients
+ * Implémente l'ajout, la récupération et la suppression d'articles dans un panier
+ * Source : <a href="https://www.baeldung.com/java-dao-pattern">Baeldung - DAO Pattern</a>
+ * @author Martin
+ */
 public class PanierDAO {
 
+    /**
+     * Ajoute un article au panier du client.
+     * Si le panier n'existe pas, il est créé.
+     * Si l'article existe déjà dans le panier, la quantité est incrémentée.
+     * @param idClient identifiant du client
+     * @param idArticle identifiant de l'article
+     * @param quantite quantité à ajouter
+     */
     public static void ajouterArticle(int idClient, int idArticle, int quantite) {
         try (Connection conn = ConnexionBDD.getConnexion()) {
-            // 1. Vérifier si un panier existe déjà pour ce client
             int idPanier = -1;
             PreparedStatement checkStmt = conn.prepareStatement(
                     "SELECT id_panier FROM panier WHERE id_client = ?"
@@ -22,7 +36,6 @@ public class PanierDAO {
             if (rs.next()) {
                 idPanier = rs.getInt("id_panier");
             } else {
-                // 2. Sinon, créer un nouveau panier
                 PreparedStatement insertPanier = conn.prepareStatement(
                         "INSERT INTO panier (id_client, date_creation) VALUES (?, NOW())",
                         Statement.RETURN_GENERATED_KEYS
@@ -36,7 +49,6 @@ public class PanierDAO {
                 }
             }
 
-            // 3. Ajouter l'article dans panier_article
             PreparedStatement stmt = conn.prepareStatement(
                     "INSERT INTO panier_article (id_panier, id_article, quantite) " +
                             "VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantite = quantite + ?"
@@ -52,11 +64,14 @@ public class PanierDAO {
         }
     }
 
-
+    /**
+     * Récupère le contenu du panier pour un client donné
+     * @param idClient identifiant du client
+     * @return une map d'articles et leur quantité respective
+     */
     public static Map<Article, Integer> getPanier(int idClient) {
         Map<Article, Integer> panier = new HashMap<>();
         try (Connection conn = ConnexionBDD.getConnexion()) {
-            // Obtenir l'id_panier du client dans la table panier
             String sqlPanier = "SELECT id_panier FROM panier WHERE id_client = ?";
             PreparedStatement stmtPanier = conn.prepareStatement(sqlPanier);
             stmtPanier.setInt(1, idClient);
@@ -65,13 +80,12 @@ public class PanierDAO {
             if (rsPanier.next()) {
                 int idPanier = rsPanier.getInt("id_panier");
 
-                // Maintenant, obtenir les articles du panier
                 String sqlArticles = "SELECT a.*, pa.quantite " +
                         "FROM panier_article pa " +
                         "JOIN article a ON pa.id_article = a.id_article " +
                         "WHERE pa.id_panier = ?";
                 PreparedStatement stmtArticles = conn.prepareStatement(sqlArticles);
-                stmtArticles.setInt(1, idPanier);  // Utilisation de l'id_panier récupéré
+                stmtArticles.setInt(1, idPanier);
 
                 ResultSet rsArticles = stmtArticles.executeQuery();
                 while (rsArticles.next()) {
@@ -94,10 +108,12 @@ public class PanierDAO {
         return panier;
     }
 
-
+    /**
+     * Vide le panier du client spécifié
+     * @param idClient identifiant du client
+     */
     public static void viderPanier(int idClient) {
         try (Connection conn = ConnexionBDD.getConnexion()) {
-            // Récupérer l'id_panier du client
             PreparedStatement stmtPanier = conn.prepareStatement(
                     "SELECT id_panier FROM panier WHERE id_client = ?"
             );
@@ -107,7 +123,6 @@ public class PanierDAO {
             if (rs.next()) {
                 int idPanier = rs.getInt("id_panier");
 
-                // Supprimer les articles du panier
                 PreparedStatement stmtDelete = conn.prepareStatement(
                         "DELETE FROM panier_article WHERE id_panier = ?"
                 );
@@ -119,5 +134,4 @@ public class PanierDAO {
             e.printStackTrace();
         }
     }
-
 }

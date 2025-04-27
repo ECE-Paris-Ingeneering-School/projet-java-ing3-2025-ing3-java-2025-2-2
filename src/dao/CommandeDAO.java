@@ -10,8 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Classe CommandeDAO
+ * Gère l'accès aux données concernant les commandes et les lignes de commande
+ * Suivant le modèle DAO pour une meilleure séparation de responsabilités
+ * Source : <a href="https://www.baeldung.com/java-dao-pattern">Baeldung - DAO Pattern</a>
+ * @author Alice
+ */
 public class CommandeDAO {
 
+    /**
+     * Récupère toutes les commandes passées par un client
+     * @param idClient identifiant du client
+     * @return liste de commandes associées à ce client
+     */
     public List<Commande> getCommandesParClient(int idClient) {
         List<Commande> commandes = new ArrayList<>();
         String sql = "SELECT * FROM commande WHERE id_client = ? ORDER BY date_commande DESC";
@@ -40,6 +52,12 @@ public class CommandeDAO {
         return commandes;
     }
 
+    /**
+     * Récupère tous les articles associés à une commande donnée
+     * @param idCommande identifiant de la commande
+     * @param conn connexion active à la base de données
+     * @return liste des articles et quantités associés à la commande
+     */
     private List<CommandeArticle> getCommandeArticles(int idCommande, Connection conn) {
         List<CommandeArticle> articles = new ArrayList<>();
         String sql = "SELECT a.*, ca.quantite, ca.prix_total " +
@@ -75,6 +93,13 @@ public class CommandeDAO {
         return articles;
     }
 
+    /**
+     * Valide une commande en enregistrant la commande et ses articles en base de données
+     * @param idClient identifiant du client
+     * @param articles articles commandés avec leur quantité
+     * @param total montant total de la commande
+     * @return true si la commande a été enregistrée avec succès, false sinon
+     */
     public boolean validerCommande(int idClient, Map<Article, Integer> articles, double total) {
         try (Connection conn = ConnexionBDD.getConnexion()) {
             String sqlCommande = "INSERT INTO commande (id_client, date_commande, total) VALUES (?, NOW(), ?)";

@@ -2,8 +2,20 @@ package dao;
 
 import java.sql.*;
 
+/**
+ * Classe VenteDAO
+ * Gère l'accès aux données pour le suivi des ventes d'articles
+ * Permet de récupérer la quantité totale vendue pour un article donné
+ * Source : <a href="https://www.baeldung.com/java-dao-pattern">Baeldung - DAO Pattern</a>
+ * @author Quentin
+ */
 public class VenteDAO {
 
+    /**
+     * Récupère la quantité totale vendue pour un article spécifique
+     * @param idArticle identifiant de l'article
+     * @return quantité vendue de l'article
+     */
     public int getQuantiteVendue(int idArticle) {
         int quantiteVendue = 0;
         String sql = "SELECT SUM(quantite) AS quantite_vendue FROM commande_article WHERE id_article = ?";
