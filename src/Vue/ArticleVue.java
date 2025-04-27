@@ -147,7 +147,6 @@ public class ArticleVue extends JFrame {
             JLabel nomLabel = new JLabel(article.getNom(), SwingConstants.CENTER);
             nomLabel.setFont(new Font("Arial", Font.BOLD, 14));
             panel.add(nomLabel, BorderLayout.NORTH);
-
             try {
                 URL imgUrl = getClass().getClassLoader().getResource(article.getPhoto());
                 if (imgUrl != null) {

@@ -17,23 +17,38 @@ public class ArticleDetailVue extends JFrame {
         this.idClient = idClient;
 
         setTitle("Détail de l'article");
-        setSize(500, 600);
+        setSize(1000, 600);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        Color greenColor = new Color(34, 139, 34);
 
         JPanel detailPanel = new JPanel();
         detailPanel.setLayout(new BoxLayout(detailPanel, BoxLayout.Y_AXIS));
         detailPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Nom
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.setOpaque(false);
+        JButton retourBtn = new JButton("←");
+        retourBtn.setBackground(greenColor);
+        retourBtn.setForeground(Color.WHITE);
+        retourBtn.setFocusPainted(false);
+        retourBtn.setPreferredSize(new Dimension(50, 30));
+        retourBtn.addActionListener(e -> {
+            new ArticleVue(idClient);
+            dispose();
+        });
+        topPanel.add(retourBtn);
+        detailPanel.add(topPanel);
+
         JLabel nomLabel = new JLabel(article.getNom(), SwingConstants.CENTER);
         nomLabel.setFont(new Font("Arial", Font.BOLD, 20));
         nomLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        detailPanel.add(Box.createVerticalStrut(10));
         detailPanel.add(nomLabel);
 
         detailPanel.add(Box.createVerticalStrut(15));
 
-        // Image
         try {
             URL imgUrl = getClass().getClassLoader().getResource(article.getPhoto());
             if (imgUrl != null) {
@@ -51,7 +66,6 @@ public class ArticleDetailVue extends JFrame {
 
         detailPanel.add(Box.createVerticalStrut(10));
 
-        // Marque (cliquable)
         JButton marqueBtn = new JButton(article.getMarque().getNom());
         marqueBtn.setBorderPainted(false);
         marqueBtn.setContentAreaFilled(false);
@@ -67,8 +81,6 @@ public class ArticleDetailVue extends JFrame {
         detailPanel.add(marqueBtn);
 
         detailPanel.add(Box.createVerticalStrut(10));
-
-        // Description
         JTextArea description = new JTextArea(article.getDescription());
         description.setLineWrap(true);
         description.setWrapStyleWord(true);
@@ -78,14 +90,12 @@ public class ArticleDetailVue extends JFrame {
 
         detailPanel.add(Box.createVerticalStrut(10));
 
-        // Prix unitaire
         final double prixUnitaire = article.getPrix_unitaire();
         JLabel prixUnitaireLabel = new JLabel("Prix unitaire : " + String.format("%.2f", prixUnitaire) + " €");
         prixUnitaireLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         prixUnitaireLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         detailPanel.add(prixUnitaireLabel);
 
-        // Prix total (dépendant de la quantité)
         JLabel prixTotalLabel = new JLabel("Prix total : " + String.format("%.2f", prixUnitaire) + " €");
         prixTotalLabel.setFont(new Font("Arial", Font.BOLD, 16));
         prixTotalLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -93,7 +103,6 @@ public class ArticleDetailVue extends JFrame {
 
         detailPanel.add(Box.createVerticalStrut(15));
 
-        // Sélection quantité
         JPanel quantitePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton moinsBtn = new JButton("-");
         JLabel quantiteLabel = new JLabel("1");
@@ -120,8 +129,10 @@ public class ArticleDetailVue extends JFrame {
 
         detailPanel.add(Box.createVerticalStrut(10));
 
-        // Bouton Ajouter au panier
         JButton ajouterPanierBtn = new JButton("Ajouter au panier");
+        ajouterPanierBtn.setBackground(greenColor);
+        ajouterPanierBtn.setForeground(Color.WHITE);
+        ajouterPanierBtn.setFocusPainted(false);
         ajouterPanierBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         ajouterPanierBtn.addActionListener(e -> {
             if (idClient == -1) {
@@ -131,8 +142,8 @@ public class ArticleDetailVue extends JFrame {
             } else {
                 Panier.getInstance().ajouterArticle(article, quantite[0]);
                 PanierDAO.ajouterArticle(idClient, article.getIdArticle(), quantite[0]);
+                new ArticleVue(idClient);
                 dispose();
-
             }
         });
 
