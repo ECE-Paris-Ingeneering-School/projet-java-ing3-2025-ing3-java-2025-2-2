@@ -37,7 +37,6 @@ public class HistoriqueCommandeVue extends JFrame {
                     commandePanel.add(articleLabel);
                 }
 
-                // TODO facultatif : tu peux afficher une note ici plus tard si tu gères historique_commande
                 mainPanel.add(commandePanel);
                 mainPanel.add(Box.createVerticalStrut(10));
             }
