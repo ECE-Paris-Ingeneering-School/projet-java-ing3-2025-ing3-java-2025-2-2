@@ -7,11 +7,10 @@ import java.sql.SQLException;
 public class ConnexionBDD {
     private static final String URL = "jdbc:mysql://localhost:3306/shopping";
     private static final String USER = "root";
-    private static final String PASSWORD = "root";
+    private static final String PASSWORD = "";
 
     private static Connection connexion = null;
 
-    // Constructeur privé pour empêcher l'instanciation
     private ConnexionBDD() {}
 
 
