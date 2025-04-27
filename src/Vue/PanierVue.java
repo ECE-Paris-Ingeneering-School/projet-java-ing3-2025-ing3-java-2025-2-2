@@ -14,10 +14,11 @@ import java.util.Map;
 public class PanierVue extends JFrame {
 
     private JPanel panel;
+    private double total;  // Déclaration de total comme attribut de la classe
 
     public PanierVue(int idClient) {
         setTitle("Mon Panier");
-        setSize(1000, 600);
+        setSize(1000, 600); // Même taille que le Menu
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -39,18 +40,19 @@ public class PanierVue extends JFrame {
         Map<Article, Integer> panier = PanierDAO.getPanier(idClient);
         Panier.getInstance().setArticles(panier);
 
+        total = 0.0;  // Réinitialisation du total
+
         if (panier.isEmpty()) {
             JLabel videLabel = new JLabel("Votre panier est vide.");
             videLabel.setFont(new Font("Arial", Font.BOLD, 16));
             videLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             panel.add(videLabel);
         } else {
-            double total = 0.0;
-
             for (Map.Entry<Article, Integer> entry : panier.entrySet()) {
                 Article article = entry.getKey();
                 int quantite = entry.getValue();
 
+                // Calcul du prix total avec réduction
                 int lotsComplets = quantite / article.getQte_vrac();
                 int reste = quantite % article.getQte_vrac();
                 double prixTotalArticle = lotsComplets * article.getQte_vrac() * article.getPrix_vrac() + reste * article.getPrix_unitaire();
@@ -85,6 +87,7 @@ public class PanierVue extends JFrame {
 
             panel.add(Box.createVerticalStrut(10));
 
+            // Total après réduction
             JLabel totalLabel = new JLabel("Total : " + String.format("%.2f €", total), SwingConstants.CENTER);
             totalLabel.setFont(new Font("Arial", Font.BOLD, 18));
             totalLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -104,7 +107,7 @@ public class PanierVue extends JFrame {
         validerBtn.addActionListener(e -> {
             FenetrePaiement fenetrePaiement = new FenetrePaiement(() -> {
                 Map<Article, Integer> panierMap = Panier.getInstance().getArticles();
-                double totalPanier = Panier.getInstance().getTotal();
+                double totalPanier = total;  // Utilisation de la variable `total` maintenant accessible
                 CommandeDAO commandeDAO = new CommandeDAO();
                 boolean success = commandeDAO.validerCommande(idClient, panierMap, totalPanier);
 
