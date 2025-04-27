@@ -5,7 +5,7 @@ import Controleur.ClientControleur;
 import javax.swing.*;
 import java.awt.*;
 
-public class enregistrement extends JFrame {
+public class EnregistrementVue extends JFrame {
     private JTextField nomField;
     private JTextField prenomField;
     private JTextField emailField;
@@ -15,7 +15,7 @@ public class enregistrement extends JFrame {
 
     private ClientControleur controleur;
 
-    public enregistrement() {
+    public EnregistrementVue() {
         controleur = new ClientControleur();
 
         setTitle("Inscription - Boutique en ligne");

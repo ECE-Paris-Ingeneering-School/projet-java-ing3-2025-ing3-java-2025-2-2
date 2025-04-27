@@ -21,9 +21,19 @@ public class ClientControleur {
     public Client connecterClient(String email, String motDePasse) {
         Client client = clientDAO.trouverParEmail(email);
         if (client != null && client.getMdp().equals(motDePasse)) {
+
+            if ("nouveau".equalsIgnoreCase(client.getTypeClient())) {
+                boolean majOK = clientDAO.basculerEnAncien(client);
+                if (majOK) {
+                    client.setTypeClient("ancien");
+                    System.out.println("Client passé de 'nouveau' à 'ancien'");
+                }
+            }
+
             return client;
         }
         return null;
     }
+
 
 }

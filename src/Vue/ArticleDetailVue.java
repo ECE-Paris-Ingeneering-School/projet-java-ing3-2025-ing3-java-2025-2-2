@@ -124,9 +124,16 @@ public class ArticleDetailVue extends JFrame {
         JButton ajouterPanierBtn = new JButton("Ajouter au panier");
         ajouterPanierBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         ajouterPanierBtn.addActionListener(e -> {
-            Panier.getInstance().ajouterArticle(article, quantite[0]); // Mémoire
-            PanierDAO.ajouterArticle(idClient, article.getIdArticle(), quantite[0]); // BDD
-            JOptionPane.showMessageDialog(this, quantite[0] + " article(s) ajouté(s) au panier !");
+            if (idClient == -1) {
+                JOptionPane.showMessageDialog(this, "Veuillez vous connecter pour ajouter des articles au panier.");
+                new LoginVue().setVisible(true);
+                dispose();
+            } else {
+                Panier.getInstance().ajouterArticle(article, quantite[0]);
+                PanierDAO.ajouterArticle(idClient, article.getIdArticle(), quantite[0]);
+                dispose();
+
+            }
         });
 
         detailPanel.add(ajouterPanierBtn);
