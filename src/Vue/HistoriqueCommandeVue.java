@@ -39,6 +39,8 @@ public class HistoriqueCommandeVue extends JFrame {
             commandesPanel.add(videLabel);
         } else {
             for (Commande commande : commandes) {
+                double totalCommande = 0.0; // Initialisation du total de la commande
+
                 JPanel commandePanel = new JPanel();
                 commandePanel.setLayout(new BoxLayout(commandePanel, BoxLayout.Y_AXIS));
                 commandePanel.setBorder(BorderFactory.createCompoundBorder(
@@ -46,8 +48,7 @@ public class HistoriqueCommandeVue extends JFrame {
                         BorderFactory.createEmptyBorder(10, 10, 10, 10)
                 ));
 
-                JLabel titreCommande = new JLabel("Commande du " + commande.getDateCommande().toLocalDate() +
-                        " - Total : " + String.format("%.2f €", commande.getPrixTotal()));
+                JLabel titreCommande = new JLabel("Commande du " + commande.getDateCommande().toLocalDate());
                 titreCommande.setFont(new Font("Arial", Font.BOLD, 16));
                 commandePanel.add(titreCommande);
 
@@ -57,11 +58,15 @@ public class HistoriqueCommandeVue extends JFrame {
                     JPanel articlePanel = new JPanel(new BorderLayout(5, 5));
                     Article article = commandeArticle.getArticle();
 
+                    // Récupération du prix total de l'article dans la commande
+                    double prixTotalArticle = commandeArticle.getPrixTotal();
+                    totalCommande += prixTotalArticle;  // Ajout au total de la commande
+
                     JLabel nomLabel = new JLabel(
                             article.getNom() +
                                     " (" + String.format("%.2f €", article.getPrix_unitaire()) +
                                     ") x " + commandeArticle.getQuantite() +
-                                    " = " + String.format("%.2f €", commandeArticle.getPrixTotal())
+                                    " = " + String.format("%.2f €", prixTotalArticle)
                     );
                     nomLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 
@@ -84,6 +89,12 @@ public class HistoriqueCommandeVue extends JFrame {
                     commandePanel.add(articlePanel);
                     commandePanel.add(Box.createVerticalStrut(5));
                 }
+
+                // Ajout du total de la commande
+                JLabel totalCommandeLabel = new JLabel("Total de la commande : " + String.format("%.2f €", totalCommande));
+                totalCommandeLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                totalCommandeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                commandePanel.add(totalCommandeLabel);
 
                 commandesPanel.add(commandePanel);
                 commandesPanel.add(Box.createVerticalStrut(20));
@@ -114,4 +125,3 @@ public class HistoriqueCommandeVue extends JFrame {
         setVisible(true);
     }
 }
-
