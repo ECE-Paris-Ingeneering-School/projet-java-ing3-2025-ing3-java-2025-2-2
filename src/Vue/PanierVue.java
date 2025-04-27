@@ -107,18 +107,20 @@ public class PanierVue extends JFrame {
         validerBtn.addActionListener(e -> {
             FenetrePaiement fenetrePaiement = new FenetrePaiement(() -> {
                 Map<Article, Integer> panierMap = Panier.getInstance().getArticles();
-                double totalPanier = total;  // Utilisation de la variable `total` maintenant accessible
+                double totalPanier = total;
                 CommandeDAO commandeDAO = new CommandeDAO();
                 boolean success = commandeDAO.validerCommande(idClient, panierMap, totalPanier);
 
                 if (success) {
                     Panier.getInstance().viderPanier();
                     PanierDAO.viderPanier(idClient);
-                    dispose();
+                    dispose(); // Fermer le panier
+                    new HistoriqueCommandeVue(idClient, new ArticleVue(idClient)); // 👉 Ouvrir l'historique de commande
                 }
             });
             fenetrePaiement.setVisible(true);
         });
+
 
         JButton viderBtn = new JButton("Vider le Panier");
         viderBtn.setFont(new Font("Arial", Font.BOLD, 16));
