@@ -15,7 +15,9 @@ public class AdminTabVue extends JFrame {
     private JTextField searchField;
     private JButton searchButton;
     private JButton ajouterButton;
+    private JButton statistiquesButton;
     private JMenu compteMenu;
+    private List<Article> listeArticles;
 
     private ArticleDAO articleDAO;
 
@@ -42,6 +44,7 @@ public class AdminTabVue extends JFrame {
         ajouterButton.setForeground(Color.WHITE);
         ajouterButton.setFocusPainted(false);
 
+
         searchField = new JTextField(20);
 
         searchButton = new JButton("Rechercher");
@@ -50,10 +53,19 @@ public class AdminTabVue extends JFrame {
         searchButton.setForeground(Color.WHITE);
         searchButton.setFocusPainted(false);
 
+        statistiquesButton = new JButton("Statistiques Ventes");
+        statistiquesButton.setBackground(new Color(34, 139, 34));
+        statistiquesButton.setBackground(new Color(34, 139, 34));
+        statistiquesButton.setFont(new Font("Arial", Font.BOLD, 14));
+        statistiquesButton.setForeground(Color.WHITE);
+        statistiquesButton.setFocusPainted(false);
+
         ajouterButton.setFocusPainted(false);
         searchButton.setFocusPainted(false);
+        statistiquesButton.setFocusPainted(false);
 
         menuBar.add(ajouterButton);
+        menuBar.add(statistiquesButton);
         menuBar.add(Box.createHorizontalStrut(10));
         menuBar.add(searchField);
         menuBar.add(searchButton);
@@ -91,6 +103,13 @@ public class AdminTabVue extends JFrame {
         profilItem.addActionListener(e -> {
             dispose();
             new AdminProfilVue(admin).setVisible(true);
+        });
+        statistiquesButton.addActionListener(e -> {
+            ArticleDAO articleDAO = new ArticleDAO();
+            List<Article> articles = articleDAO.listerArticles(); // <-- On récupère les articles depuis ta BDD
+
+            StatistiquesVentesVue statistiquesVentesVue = new StatistiquesVentesVue(articles);
+            statistiquesVentesVue.setVisible(true);
         });
     }
 
