@@ -4,7 +4,6 @@ import java.sql.*;
 
 public class VenteDAO {
 
-    // Méthode pour obtenir la quantité vendue d'un article
     public int getQuantiteVendue(int idArticle) {
         int quantiteVendue = 0;
         String sql = "SELECT SUM(quantite) AS quantite_vendue FROM commande_article WHERE id_article = ?";
