@@ -38,13 +38,13 @@ public class LoginVue extends JFrame {
         titleLabel = new JLabel("Connexion", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
         titleLabel.setPreferredSize(new Dimension(1000, 60));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 50));
 
-        backButton = new JButton("← Retour");
+        JButton backButton = new JButton("←");
         backButton.setFont(new Font("Arial", Font.BOLD, 14));
         backButton.setBackground(new Color(34, 139, 34));
         backButton.setForeground(Color.WHITE);
-        backButton.setPreferredSize(new Dimension(100, 40));
+        backButton.setPreferredSize(new Dimension(50, 40));
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
