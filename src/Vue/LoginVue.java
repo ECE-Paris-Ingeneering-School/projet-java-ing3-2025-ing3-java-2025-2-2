@@ -24,6 +24,7 @@ public class LoginVue extends JFrame {
     private JButton adminLink;
     private JLabel messageLabel;
     private JLabel titleLabel;
+    private JButton backButton;  // Bouton retour
 
     private ClientControleur controleur;
 
@@ -38,6 +39,12 @@ public class LoginVue extends JFrame {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
         titleLabel.setPreferredSize(new Dimension(1000, 60));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+
+        backButton = new JButton("← Retour");
+        backButton.setFont(new Font("Arial", Font.BOLD, 14));
+        backButton.setBackground(new Color(34, 139, 34));
+        backButton.setForeground(Color.WHITE);
+        backButton.setPreferredSize(new Dimension(100, 40));
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -94,6 +101,9 @@ public class LoginVue extends JFrame {
         panel.add(loginButton, gbc);
 
         JPanel northPanel = new JPanel(new BorderLayout());
+        JPanel backPanel = new JPanel();
+        backPanel.add(backButton);
+        northPanel.add(backPanel, BorderLayout.WEST);
         northPanel.add(titleLabel, BorderLayout.CENTER);
         northPanel.add(messageLabel, BorderLayout.SOUTH);
         add(northPanel, BorderLayout.NORTH);
@@ -151,6 +161,16 @@ public class LoginVue extends JFrame {
                 if (conn != null) {
                     new AdminLoginVue(conn).setVisible(true);
                 }
+            }
+        });
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int idClient = -1;
+                ArticleVue articleVue = new ArticleVue(idClient);
+                articleVue.setVisible(true);
+                dispose();
             }
         });
 
