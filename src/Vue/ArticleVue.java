@@ -91,6 +91,7 @@ public class ArticleVue extends JFrame {
             });
 
         } else {
+            dispose();
             JMenuItem seConnecterItem = new JMenuItem("Se connecter");
             compteMenu.add(seConnecterItem);
 
@@ -116,6 +117,7 @@ public class ArticleVue extends JFrame {
 
         panierButton.addActionListener(e -> {
             if (Session.estAncienClient()) {
+                dispose();
                 new PanierVue(idClient).setVisible(true);
             } else {
                 afficherConnexionRequise("le panier");
@@ -164,6 +166,7 @@ public class ArticleVue extends JFrame {
 
             panel.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    dispose();
                     new ArticleDetailVue(article, idClient);
                 }
             });

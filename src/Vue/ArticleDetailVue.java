@@ -140,6 +140,7 @@ public class ArticleDetailVue extends JFrame {
                 new LoginVue().setVisible(true);
                 dispose();
             } else {
+
                 Panier.getInstance().ajouterArticle(article, quantite[0]);
                 PanierDAO.ajouterArticle(idClient, article.getIdArticle(), quantite[0]);
                 new ArticleVue(idClient);
