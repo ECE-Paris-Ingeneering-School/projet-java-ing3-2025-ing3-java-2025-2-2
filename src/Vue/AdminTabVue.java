@@ -39,8 +39,18 @@ public class AdminTabVue extends JFrame {
         menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.X_AXIS));
 
         ajouterButton = new JButton("Ajouter Article");
+        ajouterButton.setBackground(new Color(34, 139, 34));
+        ajouterButton.setFont(new Font("Arial", Font.BOLD, 14));
+        ajouterButton.setForeground(Color.WHITE);
+        ajouterButton.setFocusPainted(false);
+
         searchField = new JTextField(20);
+
         searchButton = new JButton("Rechercher");
+        searchButton.setBackground(new Color(34, 139, 34));
+        searchButton.setFont(new Font("Arial", Font.BOLD, 14));
+        searchButton.setForeground(Color.WHITE);
+        searchButton.setFocusPainted(false);
 
         ajouterButton.setFocusPainted(false);
         searchButton.setFocusPainted(false);
@@ -53,6 +63,8 @@ public class AdminTabVue extends JFrame {
 
         // Compte admin
         compteMenu = new JMenu("Compte Admin");
+        compteMenu.setFont(new Font("Arial", Font.BOLD, 14));
+        compteMenu.setForeground(new Color(34, 139, 34));
         JMenuItem profilItem = new JMenuItem("Informations");
         JMenuItem deconnexionItem = new JMenuItem("Se déconnecter");
 
@@ -82,11 +94,7 @@ public class AdminTabVue extends JFrame {
         });
 
         profilItem.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this,
-                    "Admin connecté : " + admin.getPrenom() + " " + admin.getNom() +
-                            "\nEmail : " + admin.getEmail(),
-                    "Profil Administrateur",
-                    JOptionPane.INFORMATION_MESSAGE);
+            new AdminProfilVue(admin).setVisible(true);
         });
     }
 
