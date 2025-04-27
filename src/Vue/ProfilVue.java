@@ -30,7 +30,7 @@ public class ProfilVue extends JFrame {
         retourBtn.setForeground(Color.WHITE);
         retourBtn.setFocusPainted(false);
         retourBtn.addActionListener(e -> {
-            new ArticleVue(idClient); // Reviens à la page ArticleVue
+            new ArticleVue(idClient);
             dispose();
         });
         topPanel.add(retourBtn);
@@ -38,23 +38,28 @@ public class ProfilVue extends JFrame {
 
         mainPanel.add(Box.createVerticalStrut(20));
 
+
         if (client != null) {
-            // Affichage des informations du client
-            JPanel panel = new JPanel(new GridLayout(5, 2, 10, 10));
-            panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+            JPanel infoPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+            infoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+            infoPanel.setBackground(Color.WHITE);
+            infoPanel.setPreferredSize(new Dimension(600, 300));
 
-            panel.add(new JLabel("Nom :"));
-            panel.add(new JLabel(client.getNom()));
+            infoPanel.add(new JLabel("Nom :"));
+            infoPanel.add(new JLabel(client.getNom()));
 
-            panel.add(new JLabel("Prénom :"));
-            panel.add(new JLabel(client.getPrenom()));
+            infoPanel.add(new JLabel("Prénom :"));
+            infoPanel.add(new JLabel(client.getPrenom()));
 
-            panel.add(new JLabel("Email :"));
-            panel.add(new JLabel(client.getEmail()));
+            infoPanel.add(new JLabel("Email :"));
+            infoPanel.add(new JLabel(client.getEmail()));
 
-            mainPanel.add(panel);
+            JPanel centeredPanel = new JPanel();
+            centeredPanel.setLayout(new BorderLayout());
+            centeredPanel.add(infoPanel, BorderLayout.CENTER);
 
-            // Bouton pour modifier les informations
+            mainPanel.add(centeredPanel);
+
             JButton modifierBtn = new JButton("Modifier");
             modifierBtn.setBackground(new Color(34, 139, 34));
             modifierBtn.setForeground(Color.WHITE);
@@ -101,7 +106,6 @@ public class ProfilVue extends JFrame {
             String nouveauPrenom = prenomField.getText();
             String nouvelEmail = emailField.getText();
 
-            // Mettre à jour l'objet client et la base de données
             client.setNom(nouveauNom);
             client.setPrenom(nouveauPrenom);
             client.setEmail(nouvelEmail);

@@ -2,12 +2,13 @@ package dao;
 
 import Modele.Article;
 import Modele.Commande;
+import Modele.CommandeArticle;
 import Modele.Marque;
-import Modele.Client;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class CommandeDAO {
 
@@ -24,11 +25,11 @@ public class CommandeDAO {
             while (rs.next()) {
                 Commande cmd = new Commande(
                         rs.getInt("id_commande"),
-                        null, // Tu peux recharger Client si besoin
+                        null,
                         rs.getTimestamp("date_commande").toLocalDateTime(),
                         rs.getDouble("total")
                 );
-                cmd.setArticles(getArticlesPourCommande(cmd.getIdCommande(), conn));
+                cmd.setArticles(getCommandeArticles(cmd.getIdCommande(), conn));
                 commandes.add(cmd);
             }
 
@@ -39,17 +40,19 @@ public class CommandeDAO {
         return commandes;
     }
 
-    private List<Article> getArticlesPourCommande(int idCommande, Connection conn) {
-        List<Article> articles = new ArrayList<>();
-        String sql = "SELECT a.*, ca.quantite FROM commande_article ca " +
-                "JOIN article a ON ca.id_article = a.id_article WHERE ca.id_commande = ?";
+    private List<CommandeArticle> getCommandeArticles(int idCommande, Connection conn) {
+        List<CommandeArticle> articles = new ArrayList<>();
+        String sql = "SELECT a.*, ca.quantite, ca.prix_total " +
+                "FROM commande_article ca " +
+                "JOIN article a ON ca.id_article = a.id_article " +
+                "WHERE ca.id_commande = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idCommande);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Article a = new Article(
+                Article article = new Article(
                         rs.getInt("id_article"),
                         rs.getString("nom"),
                         rs.getString("description"),
@@ -59,7 +62,11 @@ public class CommandeDAO {
                         new Marque(rs.getInt("id_marque"), rs.getString("nom")),
                         rs.getString("photo")
                 );
-                articles.add(a);
+                int quantite = rs.getInt("quantite");
+                double prixTotal = rs.getDouble("prix_total");
+
+                CommandeArticle commandeArticle = new CommandeArticle(article, quantite, prixTotal);
+                articles.add(commandeArticle);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -70,7 +77,6 @@ public class CommandeDAO {
 
     public boolean validerCommande(int idClient, Map<Article, Integer> articles, double total) {
         try (Connection conn = ConnexionBDD.getConnexion()) {
-            // 1. Insérer dans commande
             String sqlCommande = "INSERT INTO commande (id_client, date_commande, total) VALUES (?, NOW(), ?)";
             PreparedStatement stmtCommande = conn.prepareStatement(sqlCommande, Statement.RETURN_GENERATED_KEYS);
             stmtCommande.setInt(1, idClient);
@@ -81,7 +87,6 @@ public class CommandeDAO {
             if (rs.next()) {
                 int idCommande = rs.getInt(1);
 
-                // 2. Insérer dans commande_article
                 String sqlArticle = "INSERT INTO commande_article (id_commande, id_article, quantite, prix_total) VALUES (?, ?, ?, ?)";
                 PreparedStatement stmtArticle = conn.prepareStatement(sqlArticle);
 

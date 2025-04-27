@@ -2,6 +2,7 @@ package Vue;
 
 import Modele.Article;
 import Modele.Commande;
+import Modele.CommandeArticle;
 import dao.CommandeDAO;
 
 import javax.swing.*;
@@ -18,12 +19,11 @@ public class HistoriqueCommandeVue extends JFrame {
         this.previousFrame = previousFrame;
 
         setTitle("📜 Historique de vos commandes");
-        setSize(1000, 600); // ✅ Même taille que ArticleVue
+        setSize(1000, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout(10, 10));
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JPanel commandesPanel = new JPanel();
@@ -53,15 +53,18 @@ public class HistoriqueCommandeVue extends JFrame {
 
                 commandePanel.add(Box.createVerticalStrut(10));
 
-                for (Article article : commande.getArticles()) {
-                    JPanel articlePanel = new JPanel(new BorderLayout(5,5));
+                for (CommandeArticle commandeArticle : commande.getArticles()) {
+                    JPanel articlePanel = new JPanel(new BorderLayout(5, 5));
+                    Article article = commandeArticle.getArticle();
 
-                    // Titre article
-                    JLabel nomLabel = new JLabel(article.getNom() + " (" +
-                            String.format("%.2f €", article.getPrix_unitaire()) + ")");
+                    JLabel nomLabel = new JLabel(
+                            article.getNom() +
+                                    " (" + String.format("%.2f €", article.getPrix_unitaire()) +
+                                    ") x " + commandeArticle.getQuantite() +
+                                    " = " + String.format("%.2f €", commandeArticle.getPrixTotal())
+                    );
                     nomLabel.setFont(new Font("Arial", Font.PLAIN, 14));
 
-                    // Image article
                     try {
                         URL imgUrl = getClass().getClassLoader().getResource(article.getPhoto());
                         if (imgUrl != null) {
@@ -90,10 +93,9 @@ public class HistoriqueCommandeVue extends JFrame {
         JScrollPane scrollPane = new JScrollPane(commandesPanel);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // ✅ Bouton retour avec couleur verte
         JButton retourBtn = new JButton("←");
         retourBtn.setFont(new Font("Arial", Font.BOLD, 14));
-        retourBtn.setBackground(new Color(34, 139, 34)); // vert
+        retourBtn.setBackground(new Color(34, 139, 34));
         retourBtn.setForeground(Color.WHITE);
         retourBtn.setFocusPainted(false);
         retourBtn.setBorderPainted(false);
@@ -112,3 +114,4 @@ public class HistoriqueCommandeVue extends JFrame {
         setVisible(true);
     }
 }
+
