@@ -82,11 +82,14 @@ public class ArticleVue extends JFrame {
             compteMenu.add(historiqueItem);
             compteMenu.add(deconnexionItem);
 
-            profilItem.addActionListener(e -> new ProfilVue(idClient).setVisible(true));
+            profilItem.addActionListener(e -> {
+                dispose(); // Fermer ArticleVue avant d'ouvrir ProfilVue
+                new ProfilVue(idClient).setVisible(true);
+            });
             historiqueItem.addActionListener(e -> new HistoriqueCommandeVue(idClient));
             deconnexionItem.addActionListener(e -> {
                 Session.deconnecter();
-                new ArticleVue(-1);
+                new ArticleVue(-1).setVisible(true);
                 dispose();
             });
 
@@ -116,6 +119,7 @@ public class ArticleVue extends JFrame {
 
         panierButton.addActionListener(e -> {
             if (Session.estAncienClient()) {
+                dispose();
                 new PanierVue(idClient).setVisible(true);
             } else {
                 afficherConnexionRequise("le panier");
@@ -164,6 +168,7 @@ public class ArticleVue extends JFrame {
 
             panel.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    dispose();
                     new ArticleDetailVue(article, idClient);
                 }
             });

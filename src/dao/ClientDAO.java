@@ -101,6 +101,37 @@ public class ClientDAO {
 
         return client;
     }
+    public boolean mettreAJourClient(Client client) {
+        String query = "UPDATE client SET nom = ?, prenom = ?, email = ? WHERE id_client = ?";
+        try (Connection conn = ConnexionBDD.getConnexion();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, client.getNom());
+            ps.setString(2, client.getPrenom());
+            ps.setString(3, client.getEmail());
+            ps.setInt(4, client.getIdClient());
+
+            System.out.println("Requête SQL: " + query);
+            System.out.println("id_client: " + client.getIdClient());
+            System.out.println("Nom: " + client.getNom());
+            System.out.println("Prénom: " + client.getPrenom());
+            System.out.println("Email: " + client.getEmail());
+
+            int rowsUpdated = ps.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("Mise à jour réussie !");
+                return true;
+            } else {
+                System.err.println("Aucune ligne mise à jour. Vérifiez si le client avec cet ID existe.");
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 
 
