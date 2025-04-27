@@ -62,4 +62,46 @@ public class ClientDAO {
         return client;
     }
 
+    public boolean basculerEnAncien(Client client) {
+        String sql = "UPDATE Client SET type_client = 'ancien' WHERE id_client = ?";
+        try (Connection conn = ConnexionBDD.getConnexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, client.getIdClient());
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            System.err.println("Erreur lors du changement de type_client : " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Client trouverParId(int idClient) {
+        String sql = "SELECT * FROM Client WHERE id_client = ?";
+        Client client = null;
+
+        try (Connection conn = ConnexionBDD.getConnexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idClient);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    client = new Client();
+                    client.setIdClient(rs.getInt("id_client"));
+                    client.setNom(rs.getString("nom"));
+                    client.setPrenom(rs.getString("prenom"));
+                    client.setEmail(rs.getString("email"));
+                    client.setMdp(rs.getString("mot_de_passe"));
+                    client.setTypeClient(rs.getString("type_client"));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la recherche du client par ID : " + e.getMessage());
+        }
+
+        return client;
+    }
+
+
+
 }

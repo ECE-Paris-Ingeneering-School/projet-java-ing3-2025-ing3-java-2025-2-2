@@ -7,17 +7,15 @@ import Modele.Administrateur;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
-public class AdminDashboardGUI extends JFrame {
+public class AdminTabVue extends JFrame {
     private Administrateur admin;
     private JTable tableArticles;
     private DefaultTableModel tableModel;
     private ArticleDAO articleDAO;
 
-    public AdminDashboardGUI(Administrateur admin) {
+    public AdminTabVue(Administrateur admin) {
         this.admin = admin;
         this.articleDAO = new ArticleDAO();
 
@@ -33,23 +31,20 @@ public class AdminDashboardGUI extends JFrame {
     private void initUI() {
         setLayout(new BorderLayout());
 
-        // Colonnes du tableau
         String[] colonnes = {"ID", "Nom", "Description", "Prix Unitaire", "Prix Vrac", "Quantité Vrac", "Marque"};
         tableModel = new DefaultTableModel(colonnes, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Rendre toutes les cellules non éditables
+                return false;
             }
         };
         tableArticles = new JTable(tableModel);
 
-        // Permettre la sélection d'une seule ligne à la fois
         tableArticles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane scrollPane = new JScrollPane(tableArticles);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Panel des boutons
         JPanel boutonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
         JButton ajouterBtn = new JButton("Ajouter");
@@ -69,7 +64,6 @@ public class AdminDashboardGUI extends JFrame {
     }
 
     private void chargerArticles() {
-        // Vider le modèle actuel
         tableModel.setRowCount(0);
 
         List<Article> articles = articleDAO.listerArticles();
@@ -93,10 +87,9 @@ public class AdminDashboardGUI extends JFrame {
 
         if (dialog.isValidated()) {
             Article nouvelArticle = dialog.getArticleFromFields();
-            // Ici, tu devras ajouter une méthode dans ArticleDAO pour insérer un nouvel article
             if (articleDAO.ajouterArticle(nouvelArticle)) {
                 JOptionPane.showMessageDialog(this, "Article ajouté avec succès !");
-                chargerArticles(); // Rafraîchir la liste
+                chargerArticles();
             } else {
                 JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout de l'article", "Erreur", JOptionPane.ERROR_MESSAGE);
             }
@@ -111,7 +104,7 @@ public class AdminDashboardGUI extends JFrame {
         }
 
         int idArticle = (int) tableModel.getValueAt(selectedRow, 0);
-        Article article = articleDAO.trouverParId(idArticle); // À implémenter dans ArticleDAO
+        Article article = articleDAO.trouverParId(idArticle);
 
         if (article != null) {
             ArticleFormDialog dialog = new ArticleFormDialog(this, article);
@@ -119,7 +112,7 @@ public class AdminDashboardGUI extends JFrame {
 
             if (dialog.isValidated()) {
                 Article articleModifie = dialog.getArticleFromFields();
-                if (articleDAO.modifierArticle(articleModifie)) { // À implémenter dans ArticleDAO
+                if (articleDAO.modifierArticle(articleModifie)) {
                     JOptionPane.showMessageDialog(this, "Article modifié avec succès !");
                     chargerArticles();
                 } else {

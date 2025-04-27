@@ -1,78 +1,121 @@
 package Vue;
 
 import Modele.Article;
+import Modele.Session;
 import dao.ArticleDAO;
+import Controleur.PanierControleur;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
 import java.net.URL;
+import java.util.List;
 
 public class ArticleVue extends JFrame {
     private JPanel articlesPanel;
     private JTextField searchField;
     private JButton searchButton;
     private JButton panierButton;
+    private JMenu compteMenu;
+    private JButton catalogueButton;
     private int idClient;
 
     public ArticleVue(int idClient) {
-        this.idClient = idClient;
 
+        this.idClient = idClient;
         setTitle("Catalogue d'articles");
-        setSize(800, 600);
+        setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.X_AXIS));
 
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton historiqueBtn = new JButton("Commandes");
-        historiqueBtn.addActionListener(e -> new HistoriqueCommandeVue(idClient));
-        topPanel.add(historiqueBtn);
-
-
+        catalogueButton = new JButton("Catalogue");
         searchField = new JTextField(20);
         searchButton = new JButton("Rechercher");
-        panierButton = new JButton("Voir le Panier");
+        panierButton = new JButton("Panier");
 
-        topPanel.add(searchField);
-        topPanel.add(searchButton);
-        topPanel.add(panierButton);
-        topPanel.add(historiqueBtn); // 👈 ICI
+        catalogueButton.setFocusPainted(false);
+        searchButton.setFocusPainted(false);
+        panierButton.setFocusPainted(false);
 
-        historiqueBtn.addActionListener(e -> new HistoriqueCommandeVue(idClient));
+        menuBar.add(catalogueButton);
+        menuBar.add(Box.createHorizontalStrut(10));
+        menuBar.add(searchField);
+        menuBar.add(searchButton);
+        menuBar.add(Box.createHorizontalStrut(10));
+        menuBar.add(panierButton);
+        menuBar.add(Box.createHorizontalGlue());
 
-        mainPanel.add(topPanel, BorderLayout.NORTH);
+        // Création du menu "Compte"
+        compteMenu = new JMenu("Compte");
+        if (Session.estAncienClient()) {
+            JMenuItem profilItem = new JMenuItem("Informations personnelles");
+            JMenuItem historiqueItem = new JMenuItem("Historique des commandes");
+            JMenuItem deconnexionItem = new JMenuItem("Se déconnecter");
 
-        articlesPanel = new JPanel();
-        articlesPanel.setLayout(new GridLayout(0, 3, 20, 20));
+            compteMenu.add(profilItem);
+            compteMenu.add(historiqueItem);
+            compteMenu.add(deconnexionItem);
+
+            // Actions des éléments du menu
+            profilItem.addActionListener(e -> new ProfilVue(idClient).setVisible(true));
+            historiqueItem.addActionListener(e -> new HistoriqueCommandeVue(idClient));
+            deconnexionItem.addActionListener(e -> {
+                Session.deconnecter();
+                new ArticleVue(-1);
+                dispose();
+            });
+
+        } else {
+            JMenuItem seConnecterItem = new JMenuItem("Se connecter");
+            compteMenu.add(seConnecterItem);
+
+            seConnecterItem.addActionListener(e -> {
+                new LoginVue().setVisible(true);
+                dispose();
+            });
+        }
+
+        menuBar.add(compteMenu);
+        setJMenuBar(menuBar);
+
+        articlesPanel = new JPanel(new GridLayout(0, 3, 20, 20));
         JScrollPane scrollPane = new JScrollPane(articlesPanel);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
-
-        add(mainPanel);
+        add(scrollPane, BorderLayout.CENTER);
 
         afficherArticles(new ArticleDAO().listerArticles());
 
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String query = searchField.getText();
-                afficherArticles(new ArticleDAO().rechercherArticles(query));
+        searchButton.addActionListener(e -> {
+            String query = searchField.getText();
+            afficherArticles(new ArticleDAO().rechercherArticles(query));
+        });
+
+        panierButton.addActionListener(e -> {
+            if (Session.estAncienClient()) {
+                new PanierVue(idClient).setVisible(true);
+            } else {
+                afficherConnexionRequise("le panier");
             }
         });
 
-        panierButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new PanierVue(idClient).setVisible(true);
-            }
+        catalogueButton.addActionListener(e -> {
+            afficherArticles(new ArticleDAO().listerArticles());
         });
 
         setVisible(true);
+    }
+
+    private void afficherConnexionRequise(String fonctionnalite) {
+        JOptionPane.showMessageDialog(this,
+                "Veuillez vous connecter pour accéder à " + fonctionnalite + ".",
+                "Accès refusé",
+                JOptionPane.WARNING_MESSAGE);
+        new LoginVue().setVisible(true);
+        dispose();
     }
 
     public void afficherArticles(List<Article> articles) {
@@ -101,9 +144,6 @@ public class ArticleVue extends JFrame {
             } catch (Exception e) {
                 panel.add(new JLabel("Erreur chargement image", SwingConstants.CENTER), BorderLayout.CENTER);
             }
-
-            JButton acheterBtn = new JButton("Acheter");
-            panel.add(acheterBtn, BorderLayout.SOUTH);
 
             panel.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {

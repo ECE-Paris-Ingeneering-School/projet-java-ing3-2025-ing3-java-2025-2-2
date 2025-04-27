@@ -16,7 +16,7 @@ public class AdminLoginVue extends JFrame {
         controller = new AdminController(connection);
 
         setTitle("Connexion Admin");
-        setSize(300, 200);
+        setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         initUI();
@@ -48,7 +48,7 @@ public class AdminLoginVue extends JFrame {
         if (admin != null) {
             JOptionPane.showMessageDialog(this, "Connexion réussie !");
             dispose(); // ferme la fenêtre de login
-            new AdminDashboardGUI(admin).setVisible(true);
+            new AdminTabVue(admin).setVisible(true);
         } else {
             JOptionPane.showMessageDialog(this, "Identifiants invalides.", "Erreur", JOptionPane.ERROR_MESSAGE);
         }
