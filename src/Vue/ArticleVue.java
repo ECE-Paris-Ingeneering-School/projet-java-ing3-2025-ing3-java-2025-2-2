@@ -86,7 +86,11 @@ public class ArticleVue extends JFrame {
                 dispose(); // Fermer ArticleVue avant d'ouvrir ProfilVue
                 new ProfilVue(idClient).setVisible(true);
             });
-            historiqueItem.addActionListener(e -> new HistoriqueCommandeVue(idClient));
+            historiqueItem.addActionListener(e -> {
+                dispose();
+                new HistoriqueCommandeVue(idClient, this);
+            });
+
             deconnexionItem.addActionListener(e -> {
                 Session.deconnecter();
                 new ArticleVue(-1).setVisible(true);
