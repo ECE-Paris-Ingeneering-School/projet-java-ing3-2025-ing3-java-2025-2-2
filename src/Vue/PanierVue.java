@@ -153,8 +153,8 @@ public class PanierVue extends JFrame {
         retourBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new ArticleVue(idClient);
                 dispose();
+                new ArticleVue(idClient);
             }
         });
 
