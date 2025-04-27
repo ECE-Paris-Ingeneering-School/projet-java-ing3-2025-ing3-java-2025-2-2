@@ -17,7 +17,7 @@ public class PanierVue extends JFrame {
 
     public PanierVue(int idClient) {
         setTitle("Mon Panier");
-        setSize(1000, 600); // Même taille que le Menu
+        setSize(1000, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -51,7 +51,9 @@ public class PanierVue extends JFrame {
                 Article article = entry.getKey();
                 int quantite = entry.getValue();
 
-                double prixTotalArticle = article.calculerPrixTotal(quantite);
+                int lotsComplets = quantite / article.getQte_vrac();
+                int reste = quantite % article.getQte_vrac();
+                double prixTotalArticle = lotsComplets * article.getQte_vrac() * article.getPrix_vrac() + reste * article.getPrix_unitaire();
                 total += prixTotalArticle;
 
                 JPanel ligne = new JPanel(new GridLayout(1, 3));
@@ -101,25 +103,15 @@ public class PanierVue extends JFrame {
 
         validerBtn.addActionListener(e -> {
             FenetrePaiement fenetrePaiement = new FenetrePaiement(() -> {
-                int confirm = JOptionPane.showConfirmDialog(this,
-                        "Souhaitez-vous valider cette commande ?",
-                        "Confirmation",
-                        JOptionPane.YES_NO_OPTION);
+                Map<Article, Integer> panierMap = Panier.getInstance().getArticles();
+                double totalPanier = Panier.getInstance().getTotal();
+                CommandeDAO commandeDAO = new CommandeDAO();
+                boolean success = commandeDAO.validerCommande(idClient, panierMap, totalPanier);
 
-                if (confirm == JOptionPane.YES_OPTION) {
-                    Map<Article, Integer> panierMap = Panier.getInstance().getArticles();
-                    double total = Panier.getInstance().getTotal();
-                    CommandeDAO commandeDAO = new CommandeDAO();
-                    boolean success = commandeDAO.validerCommande(idClient, panierMap, total);
-
-                    if (success) {
-                        Panier.getInstance().viderPanier();
-                        PanierDAO.viderPanier(idClient);
-                        JOptionPane.showMessageDialog(this, "Commande validée avec succès !");
-                        dispose();
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Erreur lors de la validation.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                    }
+                if (success) {
+                    Panier.getInstance().viderPanier();
+                    PanierDAO.viderPanier(idClient);
+                    dispose();
                 }
             });
             fenetrePaiement.setVisible(true);
