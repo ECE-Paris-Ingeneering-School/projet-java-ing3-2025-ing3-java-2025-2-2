@@ -32,7 +32,7 @@ public class Session {
     }
 
     public static void deconnecter() {
-        clientActuel = null;  // Lors de la déconnexion, réinitialiser le clientActuel
-        setNouveauClient();  // On définit un client "nouveau" pour rediriger comme un nouveau client
+        clientActuel = null;
+        setNouveauClient();
     }
 }
