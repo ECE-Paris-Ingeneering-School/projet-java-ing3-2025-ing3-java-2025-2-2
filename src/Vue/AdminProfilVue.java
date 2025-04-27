@@ -75,10 +75,8 @@ private Administrateur admin;
         panel.add(topPanel, BorderLayout.NORTH);
         panel.add(infoPanel, BorderLayout.CENTER);
 
-        // Ajout du panneau à la fenêtre
         getContentPane().add(panel);
 
-        // Rendre la fenêtre visible
         setVisible(true);
     }
 }

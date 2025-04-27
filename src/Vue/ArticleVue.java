@@ -39,12 +39,17 @@ public class ArticleVue extends JFrame {
         catalogueButton.setBackground(greenColor);
         searchButton.setBackground(greenColor);
         panierButton.setBackground(greenColor);
-        compteButton.setBackground(greenColor);
+        compteButton.setBackground(Color.WHITE);
+
+        compteButton.setFont(new Font("Arial", Font.BOLD, 14));
+        panierButton.setFont(new Font("Arial", Font.BOLD, 14));
+        searchButton.setFont(new Font("Arial", Font.BOLD, 14));
+        catalogueButton.setFont(new Font("Arial", Font.BOLD, 14));
 
         catalogueButton.setForeground(Color.WHITE);
         searchButton.setForeground(Color.WHITE);
         panierButton.setForeground(Color.WHITE);
-        compteButton.setForeground(Color.WHITE);
+        compteButton.setForeground(new Color(34, 139, 34));
 
         catalogueButton.setFocusPainted(false);
         searchButton.setFocusPainted(false);

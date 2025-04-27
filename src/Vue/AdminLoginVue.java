@@ -32,7 +32,7 @@ public class AdminLoginVue extends JFrame {
     }
 
     private void initUI() {
-        retourButton = new JButton("← Retour");
+        retourButton = new JButton("←");
         retourButton.setPreferredSize(new Dimension(100, 40));
         retourButton.setBackground(new Color(34, 139, 34));
         retourButton.setFont(new Font("Arial", Font.BOLD, 12));

@@ -127,8 +127,11 @@ public class ArticleFormVue extends JDialog {
                 }
 
                 valide = true;
-                new AdminTabVue(null).setVisible(true);
+                AdminTabVue adminTabVue = new AdminTabVue(admin);
+                adminTabVue.setVisible(true);
                 dispose();
+                adminTabVue.toFront();
+
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Veuillez entrer des valeurs numériques valides", "Erreur de format", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
@@ -140,8 +143,8 @@ public class ArticleFormVue extends JDialog {
             AdminTabVue adminTabVue = new AdminTabVue(admin);
             adminTabVue.setVisible(true);
 
-            dispose();  // Ferme la fenêtre actuelle (AdminProfilVue)
-            adminTabVue.toFront();  // Assure-toi que AdminTabVue est au premier plan
+            dispose();
+            adminTabVue.toFront();
         });
     }
 

@@ -153,7 +153,7 @@ public class AdminTabVue extends JFrame {
         if (dialog.isValide()) {
             Article nouvelArticle = dialog.obtenirArticleDesChamps();
             if (articleDAO.ajouterArticle(nouvelArticle)) {
-                JOptionPane.showMessageDialog(this, "Article ajouté !");
+                //JOptionPane.showMessageDialog(this, "Article ajouté !");
                 afficherArticles(articleDAO.listerArticles());
             } else {
                 JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout.", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -169,7 +169,7 @@ public class AdminTabVue extends JFrame {
         if (dialog.isValide()) {
             Article articleModifie = dialog.obtenirArticleDesChamps();
             if (articleDAO.modifierArticle(articleModifie)) {
-                JOptionPane.showMessageDialog(this, "Article modifié !");
+                //JOptionPane.showMessageDialog(this, "Article modifié !");
                 afficherArticles(articleDAO.listerArticles());
             } else {
                 JOptionPane.showMessageDialog(this, "Erreur lors de la modification.", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -185,7 +185,7 @@ public class AdminTabVue extends JFrame {
 
         if (confirm == JOptionPane.YES_OPTION) {
             if (articleDAO.supprimerArticle(idArticle)) {
-                JOptionPane.showMessageDialog(this, "Article supprimé !");
+                //JOptionPane.showMessageDialog(this, "Article supprimé !");
                 afficherArticles(articleDAO.listerArticles());
             } else {
                 JOptionPane.showMessageDialog(this, "Erreur lors de la suppression.", "Erreur", JOptionPane.ERROR_MESSAGE);
