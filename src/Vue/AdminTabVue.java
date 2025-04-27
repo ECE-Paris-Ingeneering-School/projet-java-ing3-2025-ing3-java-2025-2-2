@@ -9,6 +9,13 @@ import java.awt.*;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * Fenêtre principale de l'interface administrateur pour gérer les articles.
+ * Permet d'afficher, ajouter, modifier, supprimer des articles et d'afficher des statistiques de ventes.
+ *
+ * @author Jean
+ * @source https://openclassrooms.com/fr/courses/2434016-developpez-des-sites-web-avec-java-ee/2438576-le-modele-mvc
+ */
 public class AdminTabVue extends JFrame {
     private Administrateur admin;
     private JPanel articlesPanel;
@@ -21,6 +28,11 @@ public class AdminTabVue extends JFrame {
 
     private ArticleDAO articleDAO;
 
+    /**
+     * Constructeur de la fenêtre principale de l'interface administrateur.
+     *
+     * @param admin L'administrateur connecté à l'interface.
+     */
     public AdminTabVue(Administrateur admin) {
         this.admin = admin;
         this.articleDAO = new ArticleDAO();
@@ -34,6 +46,10 @@ public class AdminTabVue extends JFrame {
         afficherArticles(articleDAO.listerArticles());
     }
 
+    /**
+     * Initialise l'interface utilisateur pour la gestion des articles.
+     * Configure les boutons, menus et panneaux de l'interface.
+     */
     private void initUI() {
         JMenuBar menuBar = new JMenuBar();
         menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.X_AXIS));
@@ -43,7 +59,6 @@ public class AdminTabVue extends JFrame {
         ajouterButton.setFont(new Font("Arial", Font.BOLD, 14));
         ajouterButton.setForeground(Color.WHITE);
         ajouterButton.setFocusPainted(false);
-
 
         searchField = new JTextField(20);
 
@@ -55,13 +70,8 @@ public class AdminTabVue extends JFrame {
 
         statistiquesButton = new JButton("Statistiques Ventes");
         statistiquesButton.setBackground(new Color(34, 139, 34));
-        statistiquesButton.setBackground(new Color(34, 139, 34));
         statistiquesButton.setFont(new Font("Arial", Font.BOLD, 14));
         statistiquesButton.setForeground(Color.WHITE);
-        statistiquesButton.setFocusPainted(false);
-
-        ajouterButton.setFocusPainted(false);
-        searchButton.setFocusPainted(false);
         statistiquesButton.setFocusPainted(false);
 
         menuBar.add(ajouterButton);
@@ -104,6 +114,7 @@ public class AdminTabVue extends JFrame {
             dispose();
             new AdminProfilVue(admin).setVisible(true);
         });
+
         statistiquesButton.addActionListener(e -> {
             dispose();
             ArticleDAO articleDAO = new ArticleDAO();
@@ -114,6 +125,11 @@ public class AdminTabVue extends JFrame {
         });
     }
 
+    /**
+     * Affiche la liste des articles dans le panneau central.
+     *
+     * @param articles La liste des articles à afficher.
+     */
     private void afficherArticles(List<Article> articles) {
         articlesPanel.removeAll();
 
@@ -165,6 +181,9 @@ public class AdminTabVue extends JFrame {
         articlesPanel.repaint();
     }
 
+    /**
+     * Ouvre un formulaire pour ajouter un nouvel article.
+     */
     private void ajouterArticle() {
         dispose();
         ArticleFormVue dialog = new ArticleFormVue(this, null, admin);
@@ -173,7 +192,6 @@ public class AdminTabVue extends JFrame {
         if (dialog.isValide()) {
             Article nouvelArticle = dialog.obtenirArticleDesChamps();
             if (articleDAO.ajouterArticle(nouvelArticle)) {
-                //JOptionPane.showMessageDialog(this, "Article ajouté !");
                 afficherArticles(articleDAO.listerArticles());
             } else {
                 JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout.", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -181,6 +199,11 @@ public class AdminTabVue extends JFrame {
         }
     }
 
+    /**
+     * Ouvre un formulaire pour modifier un article existant.
+     *
+     * @param article L'article à modifier.
+     */
     private void modifierArticle(Article article) {
         dispose();
         ArticleFormVue dialog = new ArticleFormVue(this, article, admin);
@@ -189,7 +212,6 @@ public class AdminTabVue extends JFrame {
         if (dialog.isValide()) {
             Article articleModifie = dialog.obtenirArticleDesChamps();
             if (articleDAO.modifierArticle(articleModifie)) {
-                //JOptionPane.showMessageDialog(this, "Article modifié !");
                 afficherArticles(articleDAO.listerArticles());
             } else {
                 JOptionPane.showMessageDialog(this, "Erreur lors de la modification.", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -197,6 +219,11 @@ public class AdminTabVue extends JFrame {
         }
     }
 
+    /**
+     * Supprime un article existant.
+     *
+     * @param idArticle L'identifiant de l'article à supprimer.
+     */
     private void supprimerArticle(int idArticle) {
         int confirm = JOptionPane.showConfirmDialog(this,
                 "Êtes-vous sûr de vouloir supprimer cet article ?",
@@ -205,7 +232,6 @@ public class AdminTabVue extends JFrame {
 
         if (confirm == JOptionPane.YES_OPTION) {
             if (articleDAO.supprimerArticle(idArticle)) {
-                //JOptionPane.showMessageDialog(this, "Article supprimé !");
                 afficherArticles(articleDAO.listerArticles());
             } else {
                 JOptionPane.showMessageDialog(this, "Erreur lors de la suppression.", "Erreur", JOptionPane.ERROR_MESSAGE);

@@ -16,6 +16,13 @@ import java.awt.event.WindowEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * Fenêtre permettant à l'utilisateur de se connecter à son compte client ou à l'interface admin.
+ * Cette classe gère l'authentification via un formulaire de connexion et permet à l'utilisateur de naviguer vers différentes pages.
+ *
+ * @author Quentin
+ * @source https://openclassrooms.com/fr/courses/6173501-apprenez-a-programmer-en-java?archived-source=26832#/id/r-2182759
+ */
 public class LoginVue extends JFrame {
     private JTextField emailField;
     private JPasswordField passwordField;
@@ -28,6 +35,10 @@ public class LoginVue extends JFrame {
 
     private ClientControleur controleur;
 
+    /**
+     * Constructeur de la fenêtre de connexion.
+     * Initialise l'interface graphique et les actions associées aux boutons de la fenêtre.
+     */
     public LoginVue() {
         controleur = new ClientControleur();
 
@@ -114,6 +125,7 @@ public class LoginVue extends JFrame {
         bottomPanel.add(adminLink);
         add(bottomPanel, BorderLayout.SOUTH);
 
+        // Action lors de la connexion avec un client
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -140,6 +152,7 @@ public class LoginVue extends JFrame {
             }
         });
 
+        // Action lorsque l'utilisateur clique sur le lien pour s'inscrire
         registerLink.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -148,6 +161,7 @@ public class LoginVue extends JFrame {
             }
         });
 
+        // Action lors de la connexion en tant qu'administrateur
         adminLink.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -164,6 +178,7 @@ public class LoginVue extends JFrame {
             }
         });
 
+        // Action pour le bouton retour
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -174,6 +189,7 @@ public class LoginVue extends JFrame {
             }
         });
 
+        // Comportement de fermeture de la fenêtre
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -185,6 +201,9 @@ public class LoginVue extends JFrame {
         });
     }
 
+    /**
+     * Affiche la fenêtre de connexion.
+     */
     public void afficher() {
         setVisible(true);
     }

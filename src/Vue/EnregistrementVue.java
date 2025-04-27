@@ -7,7 +7,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Classe représentant la vue pour l'enregistrement d'un nouveau client.
+ * Elle permet à un utilisateur de s'inscrire avec son nom, prénom, email et mot de passe.
+ * Cette vue gère les actions d'inscription et de redirection vers la page de connexion.
+ *
+ * @author Quentin
+ * @source https://openclassrooms.com/fr/courses/2434016-developpez-des-sites-web-avec-java-ee/2438576-le-modele-mvc
+ */
 public class EnregistrementVue extends JFrame {
+
     private JTextField nomField;
     private JTextField prenomField;
     private JTextField emailField;
@@ -18,6 +27,10 @@ public class EnregistrementVue extends JFrame {
 
     private ClientControleur controleur;
 
+    /**
+     * Constructeur de la vue d'enregistrement.
+     * Il initialise les composants graphiques et la logique de l'interface utilisateur pour l'enregistrement d'un nouveau client.
+     */
     public EnregistrementVue() {
         controleur = new ClientControleur();
 
@@ -128,6 +141,9 @@ public class EnregistrementVue extends JFrame {
         });
     }
 
+    /**
+     * Affiche la fenêtre d'enregistrement.
+     */
     public void afficher() {
         setVisible(true);
     }

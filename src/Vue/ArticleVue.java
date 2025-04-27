@@ -9,7 +9,16 @@ import java.awt.*;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * Classe représentant la vue d'affichage des articles dans un catalogue.
+ * Elle permet de rechercher des articles, afficher les articles dans une grille, et gérer les actions liées au panier et au compte.
+ * Cette vue utilise un modèle MVC pour afficher les informations des articles et interagir avec l'utilisateur.
+ *
+ * @author Martin
+ * @source https://openclassrooms.com/fr/courses/2434016-developpez-des-sites-web-avec-java-ee/2438576-le-modele-mvc
+ */
 public class ArticleVue extends JFrame {
+
     private JPanel articlesPanel;
     private JTextField searchField;
     private JButton searchButton;
@@ -18,6 +27,11 @@ public class ArticleVue extends JFrame {
     private JButton compteButton;
     private int idClient;
 
+    /**
+     * Constructeur de la vue d'articles.
+     *
+     * @param idClient L'ID du client actuel.
+     */
     public ArticleVue(int idClient) {
         this.idClient = idClient;
         setTitle("Catalogue d'articles");
@@ -140,6 +154,11 @@ public class ArticleVue extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Affiche un message de connexion requise pour accéder à une fonctionnalité.
+     *
+     * @param fonctionnalite Le nom de la fonctionnalité.
+     */
     private void afficherConnexionRequise(String fonctionnalite) {
         JOptionPane.showMessageDialog(this,
                 "Veuillez vous connecter pour accéder à " + fonctionnalite + ".",
@@ -149,6 +168,11 @@ public class ArticleVue extends JFrame {
         dispose();
     }
 
+    /**
+     * Affiche la liste des articles dans le panel.
+     *
+     * @param articles La liste des articles à afficher.
+     */
     public void afficherArticles(List<Article> articles) {
         articlesPanel.removeAll();
 

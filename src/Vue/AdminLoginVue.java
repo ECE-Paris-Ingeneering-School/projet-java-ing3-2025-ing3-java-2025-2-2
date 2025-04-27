@@ -10,6 +10,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 
+/**
+ * Fenêtre de connexion pour l'administrateur de l'application ShopECE.
+ * Permet à l'administrateur de saisir ses identifiants (email et mot de passe)
+ * pour se connecter à l'application.
+ *
+ * @author Jean
+ * @source https://openclassrooms.com/fr/courses/2434016-developpez-des-sites-web-avec-java-ee/2438576-le-modele-mvc
+ */
 public class AdminLoginVue extends JFrame {
     private JTextField emailField;
     private JPasswordField passwordField;
@@ -20,6 +28,11 @@ public class AdminLoginVue extends JFrame {
 
     private AdminController controller;
 
+    /**
+     * Constructeur de la fenêtre de connexion de l'administrateur.
+     *
+     * @param connection La connexion à la base de données pour gérer les opérations.
+     */
     public AdminLoginVue(Connection connection) {
         controller = new AdminController(connection);
 
@@ -31,6 +44,10 @@ public class AdminLoginVue extends JFrame {
         initUI();
     }
 
+    /**
+     * Initialise l'interface utilisateur de la fenêtre de connexion.
+     * Configure les composants graphiques et les actions des boutons.
+     */
     private void initUI() {
         retourButton = new JButton("←");
         retourButton.setPreferredSize(new Dimension(100, 40));
@@ -110,6 +127,11 @@ public class AdminLoginVue extends JFrame {
         });
     }
 
+    /**
+     * Gère la connexion de l'administrateur en vérifiant les identifiants.
+     * Si les identifiants sont valides, ouvre la fenêtre d'administration.
+     * Sinon, affiche un message d'erreur.
+     */
     private void handleLogin() {
         String email = emailField.getText();
         String motDePasse = new String(passwordField.getPassword());

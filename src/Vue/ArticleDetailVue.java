@@ -10,9 +10,22 @@ import java.awt.*;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * Fenêtre d'affichage des détails d'un article.
+ * Permet à l'utilisateur de voir les informations détaillées de l'article,
+ * d'ajouter l'article au panier et de naviguer vers la liste d'articles.
+ *
+ * @author Alice
+ * @source https://openclassrooms.com/fr/courses/2434016-developpez-des-sites-web-avec-java-ee/2438576-le-modele-mvc
+ */
 public class ArticleDetailVue extends JFrame {
     private int idClient;
 
+    /**
+     * Constructeur de la fenêtre de détails de l'article.
+     * @param article L'article dont les détails sont affichés.
+     * @param idClient L'ID du client qui consulte les détails.
+     */
     public ArticleDetailVue(Article article, int idClient) {
         this.idClient = idClient;
         setTitle("Détail de l'article");
@@ -181,6 +194,12 @@ public class ArticleDetailVue extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Calcule le prix total en fonction de la quantité d'articles sélectionnés.
+     * @param article L'article pour lequel le prix doit être calculé.
+     * @param quantite La quantité d'articles sélectionnée.
+     * @return Le prix total pour la quantité d'articles.
+     */
     private double calculerPrixTotal(Article article, int quantite) {
         int lotsComplets = quantite / article.getQte_vrac();
         int reste = quantite % article.getQte_vrac();

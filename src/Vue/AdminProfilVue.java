@@ -6,10 +6,22 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * Fenêtre affichant le profil de l'administrateur. Permet à l'administrateur
+ * de voir ses informations personnelles (nom, prénom, email).
+ *
+ * @author Jean
+ * @source https://openclassrooms.com/fr/courses/2434016-developpez-des-sites-web-avec-java-ee/2438576-le-modele-mvc
+ */
 public class AdminProfilVue extends JFrame {
-private Administrateur admin;
+    private Administrateur admin;
     Color greenColor = new Color(34, 139, 34);
 
+    /**
+     * Constructeur de la fenêtre du profil administrateur.
+     *
+     * @param admin L'administrateur dont les informations sont affichées.
+     */
     public AdminProfilVue(Administrateur admin) {
         this.admin = admin;
 
@@ -21,6 +33,10 @@ private Administrateur admin;
         initUI();
     }
 
+    /**
+     * Initialise l'interface utilisateur pour afficher les informations du profil.
+     * Configure les composants graphiques et la disposition de la fenêtre.
+     */
     private void initUI() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(new EmptyBorder(20, 20, 20, 20));
