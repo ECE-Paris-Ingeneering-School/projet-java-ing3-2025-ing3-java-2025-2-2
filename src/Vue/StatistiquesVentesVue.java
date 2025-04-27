@@ -9,13 +9,13 @@ import java.awt.*;
 import java.util.List;
 
 public class StatistiquesVentesVue extends JFrame {
-    private List<Article> articles;  // Liste des articles pour les stats
-    private VenteDAO venteDAO;  // DAO pour récupérer les ventes de chaque article
+    private List<Article> articles;
+    private VenteDAO venteDAO;
     private Administrateur admin;
 
     public StatistiquesVentesVue(List<Article> articles, Administrateur admin) {
         this.articles = articles;
-        this.venteDAO = new VenteDAO();  // Initialise le DAO
+        this.venteDAO = new VenteDAO();
         this.admin = admin;
 
         setTitle("Statistiques de Ventes");
@@ -45,11 +45,9 @@ public class StatistiquesVentesVue extends JFrame {
         int nombreTotalArticles = articles.size();
         double chiffreAffairesTotal = calculerChiffreAffairesTotal();
 
-        // Calcul des articles les plus et moins vendus
         Article articlePlusVendu = getArticlePlusVendu();
         Article articleMoinsVendu = getArticleMoinsVendu();
 
-        // Calcul du nombre de ventes
         int ventesPlusVendu = (articlePlusVendu != null) ? venteDAO.getQuantiteVendue(articlePlusVendu.getIdArticle()) : 0;
         int ventesMoinsVendu = (articleMoinsVendu != null) ? venteDAO.getQuantiteVendue(articleMoinsVendu.getIdArticle()) : 0;
 
@@ -65,7 +63,6 @@ public class StatistiquesVentesVue extends JFrame {
         chiffreAffairesLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         chiffreAffairesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Ajouter les statistiques des articles les plus et moins vendus
         JLabel plusVenduLabel = new JLabel("Article le plus vendu : " + (articlePlusVendu != null ? articlePlusVendu.getNom() + " (" + ventesPlusVendu + " ventes)" : "Aucun"));
         plusVenduLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         plusVenduLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -95,7 +92,6 @@ public class StatistiquesVentesVue extends JFrame {
         return total;
     }
 
-    // Méthode pour obtenir l'article le plus vendu
     private Article getArticlePlusVendu() {
         Article articlePlusVendu = null;
         int maxVentes = -1;
@@ -110,7 +106,6 @@ public class StatistiquesVentesVue extends JFrame {
         return articlePlusVendu;
     }
 
-    // Méthode pour obtenir l'article le moins vendu
     private Article getArticleMoinsVendu() {
         Article articleMoinsVendu = null;
         int minVentes = Integer.MAX_VALUE;
