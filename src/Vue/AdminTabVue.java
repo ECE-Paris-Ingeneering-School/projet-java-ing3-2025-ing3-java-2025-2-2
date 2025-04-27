@@ -5,80 +5,141 @@ import Modele.Article;
 import Modele.Administrateur;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.net.URL;
 import java.util.List;
 
 public class AdminTabVue extends JFrame {
     private Administrateur admin;
-    private JTable tableArticles;
-    private DefaultTableModel tableModel;
+    private JPanel articlesPanel;
+    private JTextField searchField;
+    private JButton searchButton;
+    private JButton ajouterButton;
+    private JMenu compteMenu;
+
     private ArticleDAO articleDAO;
 
     public AdminTabVue(Administrateur admin) {
         this.admin = admin;
         this.articleDAO = new ArticleDAO();
 
-        setTitle("Dashboard Administrateur - Bienvenue " + admin.getPrenom());
-        setSize(900, 400);
+        setTitle("Catalogue Admin - ShopECE");
+        setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         initUI();
-        chargerArticles();
+        afficherArticles(articleDAO.listerArticles());
     }
 
     private void initUI() {
-        setLayout(new BorderLayout());
+        // Menu bar
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.X_AXIS));
 
-        String[] colonnes = {"ID", "Nom", "Description", "Prix Unitaire", "Prix Vrac", "Quantité Vrac", "Marque"};
-        tableModel = new DefaultTableModel(colonnes, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tableArticles = new JTable(tableModel);
+        ajouterButton = new JButton("Ajouter Article");
+        searchField = new JTextField(20);
+        searchButton = new JButton("Rechercher");
 
-        tableArticles.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        ajouterButton.setFocusPainted(false);
+        searchButton.setFocusPainted(false);
 
-        JScrollPane scrollPane = new JScrollPane(tableArticles);
+        menuBar.add(ajouterButton);
+        menuBar.add(Box.createHorizontalStrut(10));
+        menuBar.add(searchField);
+        menuBar.add(searchButton);
+        menuBar.add(Box.createHorizontalGlue());
+
+        // Compte admin
+        compteMenu = new JMenu("Compte Admin");
+        JMenuItem profilItem = new JMenuItem("Informations");
+        JMenuItem deconnexionItem = new JMenuItem("Se déconnecter");
+
+        compteMenu.add(profilItem);
+        compteMenu.add(deconnexionItem);
+
+        menuBar.add(compteMenu);
+        setJMenuBar(menuBar);
+
+        // Panel articles
+        articlesPanel = new JPanel(new GridLayout(0, 3, 20, 20));
+        JScrollPane scrollPane = new JScrollPane(articlesPanel);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         add(scrollPane, BorderLayout.CENTER);
 
-        JPanel boutonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        // Actions
+        ajouterButton.addActionListener(e -> ajouterArticle());
 
-        JButton ajouterBtn = new JButton("Ajouter");
-        ajouterBtn.addActionListener(e -> ajouterArticle());
+        searchButton.addActionListener(e -> {
+            String query = searchField.getText();
+            afficherArticles(articleDAO.rechercherArticles(query));
+        });
 
-        JButton modifierBtn = new JButton("Modifier");
-        modifierBtn.addActionListener(e -> modifierArticle());
+        deconnexionItem.addActionListener(e -> {
+            new LoginVue().setVisible(true);
+            dispose();
+        });
 
-        JButton supprimerBtn = new JButton("Supprimer");
-        supprimerBtn.addActionListener(e -> supprimerArticle());
-
-        boutonPanel.add(ajouterBtn);
-        boutonPanel.add(modifierBtn);
-        boutonPanel.add(supprimerBtn);
-
-        add(boutonPanel, BorderLayout.SOUTH);
+        profilItem.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this,
+                    "Admin connecté : " + admin.getPrenom() + " " + admin.getNom() +
+                            "\nEmail : " + admin.getEmail(),
+                    "Profil Administrateur",
+                    JOptionPane.INFORMATION_MESSAGE);
+        });
     }
 
-    private void chargerArticles() {
-        tableModel.setRowCount(0);
-
-        List<Article> articles = articleDAO.listerArticles();
+    private void afficherArticles(List<Article> articles) {
+        articlesPanel.removeAll();
 
         for (Article article : articles) {
-            tableModel.addRow(new Object[]{
-                    article.getIdArticle(),
-                    article.getNom(),
-                    article.getDescription(),
-                    String.format("%.2f €", article.getPrix_unitaire()),
-                    article.getPrix_vrac() > 0 ? String.format("%.2f €", article.getPrix_vrac()) : "-",
-                    article.getQte_vrac() > 0 ? article.getQte_vrac() : "-",
-                    article.getMarque() != null ? article.getMarque().getNom() : "N/A"
+            JPanel panel = new JPanel(new BorderLayout(5, 5));
+            panel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+            panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+            JLabel nomLabel = new JLabel(article.getNom(), SwingConstants.CENTER);
+            nomLabel.setFont(new Font("Arial", Font.BOLD, 14));
+            panel.add(nomLabel, BorderLayout.NORTH);
+
+            try {
+                URL imgUrl = getClass().getClassLoader().getResource(article.getPhoto());
+                if (imgUrl != null) {
+                    ImageIcon imageIcon = new ImageIcon(imgUrl);
+                    Image img = imageIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+                    JLabel imageLabel = new JLabel(new ImageIcon(img));
+                    imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                    panel.add(imageLabel, BorderLayout.CENTER);
+                } else {
+                    panel.add(new JLabel("Image non trouvée", SwingConstants.CENTER), BorderLayout.CENTER);
+                }
+            } catch (Exception e) {
+                panel.add(new JLabel("Erreur chargement image", SwingConstants.CENTER), BorderLayout.CENTER);
+            }
+
+            // Clic droit pour modifier ou supprimer
+            panel.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    if (SwingUtilities.isRightMouseButton(evt)) {
+                        JPopupMenu popup = new JPopupMenu();
+                        JMenuItem modifierItem = new JMenuItem("Modifier");
+                        JMenuItem supprimerItem = new JMenuItem("Supprimer");
+
+                        modifierItem.addActionListener(e -> modifierArticle(article));
+                        supprimerItem.addActionListener(e -> supprimerArticle(article.getIdArticle()));
+
+                        popup.add(modifierItem);
+                        popup.add(supprimerItem);
+                        popup.show(panel, evt.getX(), evt.getY());
+                    }
+                }
             });
+
+            articlesPanel.add(panel);
         }
+
+        articlesPanel.revalidate();
+        articlesPanel.repaint();
     }
 
     private void ajouterArticle() {
@@ -88,61 +149,41 @@ public class AdminTabVue extends JFrame {
         if (dialog.isValidated()) {
             Article nouvelArticle = dialog.getArticleFromFields();
             if (articleDAO.ajouterArticle(nouvelArticle)) {
-                JOptionPane.showMessageDialog(this, "Article ajouté avec succès !");
-                chargerArticles();
+                JOptionPane.showMessageDialog(this, "Article ajouté !");
+                afficherArticles(articleDAO.listerArticles());
             } else {
-                JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout de l'article", "Erreur", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Erreur lors de l'ajout.", "Erreur", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    private void modifierArticle() {
-        int selectedRow = tableArticles.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Veuillez sélectionner un article à modifier", "Aucune sélection", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+    private void modifierArticle(Article article) {
+        ArticleFormDialog dialog = new ArticleFormDialog(this, article);
+        dialog.setVisible(true);
 
-        int idArticle = (int) tableModel.getValueAt(selectedRow, 0);
-        Article article = articleDAO.trouverParId(idArticle);
-
-        if (article != null) {
-            ArticleFormDialog dialog = new ArticleFormDialog(this, article);
-            dialog.setVisible(true);
-
-            if (dialog.isValidated()) {
-                Article articleModifie = dialog.getArticleFromFields();
-                if (articleDAO.modifierArticle(articleModifie)) {
-                    JOptionPane.showMessageDialog(this, "Article modifié avec succès !");
-                    chargerArticles();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Erreur lors de la modification", "Erreur", JOptionPane.ERROR_MESSAGE);
-                }
+        if (dialog.isValidated()) {
+            Article articleModifie = dialog.getArticleFromFields();
+            if (articleDAO.modifierArticle(articleModifie)) {
+                JOptionPane.showMessageDialog(this, "Article modifié !");
+                afficherArticles(articleDAO.listerArticles());
+            } else {
+                JOptionPane.showMessageDialog(this, "Erreur lors de la modification.", "Erreur", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    private void supprimerArticle() {
-        int selectedRow = tableArticles.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Veuillez sélectionner un article à supprimer", "Aucune sélection", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int idArticle = (int) tableModel.getValueAt(selectedRow, 0);
-        int confirm = JOptionPane.showConfirmDialog(
-                this,
+    private void supprimerArticle(int idArticle) {
+        int confirm = JOptionPane.showConfirmDialog(this,
                 "Êtes-vous sûr de vouloir supprimer cet article ?",
                 "Confirmation de suppression",
-                JOptionPane.YES_NO_OPTION
-        );
+                JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            if (articleDAO.supprimerArticle(idArticle)) { // À implémenter dans ArticleDAO
-                JOptionPane.showMessageDialog(this, "Article supprimé avec succès !");
-                chargerArticles();
+            if (articleDAO.supprimerArticle(idArticle)) {
+                JOptionPane.showMessageDialog(this, "Article supprimé !");
+                afficherArticles(articleDAO.listerArticles());
             } else {
-                JOptionPane.showMessageDialog(this, "Erreur lors de la suppression", "Erreur", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Erreur lors de la suppression.", "Erreur", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
