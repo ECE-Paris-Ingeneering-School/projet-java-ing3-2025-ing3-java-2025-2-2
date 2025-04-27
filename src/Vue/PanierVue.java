@@ -17,7 +17,7 @@ public class PanierVue extends JFrame {
 
     public PanierVue(int idClient) {
         setTitle("Mon Panier");
-        setSize(500, 600);
+        setSize(1000, 600); // Même taille que le Menu
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -34,10 +34,8 @@ public class PanierVue extends JFrame {
     }
 
     private void afficherPanier(int idClient) {
-        // Effacer le contenu actuel du panel
         panel.removeAll();
 
-        // Récupération du panier depuis la base
         Map<Article, Integer> panier = PanierDAO.getPanier(idClient);
         Panier.getInstance().setArticles(panier);
 
@@ -56,27 +54,26 @@ public class PanierVue extends JFrame {
                 double prixTotalArticle = article.calculerPrixTotal(quantite);
                 total += prixTotalArticle;
 
-                JPanel ligne = new JPanel(new GridLayout(1, 3));  // Ajouter une colonne pour l'image
-                ligne.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+                JPanel ligne = new JPanel(new GridLayout(1, 3));
+                ligne.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
 
-                // Image de l'article
-                String photoPath = article.getPhoto();  // Exemple : "images/robe.jpg"
-                ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource(photoPath));
+                String photoPath = article.getPhoto();
+                ImageIcon icon = null;
 
-                if (icon.getImageLoadStatus() == MediaTracker.ERRORED) {
-                    // Si l'image n'est pas trouvée ou ne peut pas être chargée, afficher une image de remplacement
-                    icon = new ImageIcon(getClass().getClassLoader().getResource("images/placeholder.jpg"));
+                try {
+                    icon = new ImageIcon(getClass().getClassLoader().getResource(photoPath));
+                    Image scaledImage = icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+                    icon = new ImageIcon(scaledImage);
+                } catch (Exception e) {
+                    icon = new ImageIcon();
                 }
 
-                Image scaledImage = icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH); // Redimensionner l'image
-                JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-
-                // Texte du nom et du prix de l'article
+                JLabel imageLabel = new JLabel(icon);
                 JLabel nomLabel = new JLabel(article.getNom() + " x" + quantite);
                 JLabel prixLabel = new JLabel(String.format("%.2f €", prixTotalArticle));
                 prixLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
-                ligne.add(imageLabel);  // Ajouter l'image
+                ligne.add(imageLabel);
                 ligne.add(nomLabel);
                 ligne.add(prixLabel);
 
@@ -96,7 +93,7 @@ public class PanierVue extends JFrame {
 
         JButton validerBtn = new JButton("Valider la commande");
         validerBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        validerBtn.setBackground(new Color(76, 175, 80)); // vert
+        validerBtn.setBackground(new Color(76, 175, 80));
         validerBtn.setForeground(Color.WHITE);
         validerBtn.setFocusPainted(false);
         validerBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -130,7 +127,7 @@ public class PanierVue extends JFrame {
 
         JButton viderBtn = new JButton("Vider le Panier");
         viderBtn.setFont(new Font("Arial", Font.BOLD, 16));
-        viderBtn.setBackground(new Color(76, 175, 80)); // vert
+        viderBtn.setBackground(new Color(76, 175, 80));
         viderBtn.setForeground(Color.WHITE);
         viderBtn.setFocusPainted(false);
         viderBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -141,15 +138,32 @@ public class PanierVue extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 Panier.getInstance().viderPanier();
                 PanierDAO.viderPanier(idClient);
-                afficherPanier(idClient); // Rafraîchir l'affichage après avoir vidé le panier
+                afficherPanier(idClient);
+            }
+        });
+
+        JButton retourBtn = new JButton("Retour au Menu");
+        retourBtn.setFont(new Font("Arial", Font.BOLD, 16));
+        retourBtn.setBackground(new Color(76, 175, 80));
+        retourBtn.setForeground(Color.WHITE);
+        retourBtn.setFocusPainted(false);
+        retourBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        retourBtn.setMaximumSize(new Dimension(200, 40));
+
+        retourBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new ArticleVue(idClient);
+                dispose();
             }
         });
 
         panel.add(validerBtn);
         panel.add(Box.createVerticalStrut(20));
         panel.add(viderBtn);
+        panel.add(Box.createVerticalStrut(20));
+        panel.add(retourBtn);
 
-        // Réajuster l'affichage
         panel.revalidate();
         panel.repaint();
     }
