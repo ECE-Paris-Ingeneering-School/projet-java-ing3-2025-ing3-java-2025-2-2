@@ -13,20 +13,23 @@ public class PanierVue extends JFrame {
 
     public PanierVue(int idClient) {
         setTitle("Mon Panier");
-        setSize(400, 500);
+        setSize(500, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        // Panneau principal
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Récupération du panier depuis la base
         Map<Article, Integer> panier = PanierDAO.getPanier(idClient);
-        Panier.getInstance().setArticles(panier); // mettre à jour le panier en mémoire
+        Panier.getInstance().setArticles(panier);
 
         if (panier.isEmpty()) {
-            panel.add(new JLabel("Votre panier est vide."));
+            JLabel videLabel = new JLabel("Votre panier est vide.");
+            videLabel.setFont(new Font("Arial", Font.BOLD, 16));
+            videLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(videLabel);
         } else {
             double total = 0.0;
 
@@ -37,66 +40,66 @@ public class PanierVue extends JFrame {
                 double prixTotalArticle = article.calculerPrixTotal(quantite);
                 total += prixTotalArticle;
 
-                JPanel ligne = new JPanel(new BorderLayout());
-                ligne.add(new JLabel(article.getNom() + " x" + quantite), BorderLayout.WEST);
-                ligne.add(new JLabel(String.format("%.2f €", prixTotalArticle)), BorderLayout.EAST);
+                JPanel ligne = new JPanel(new GridLayout(1, 2));
+                ligne.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+
+                JLabel nomLabel = new JLabel(article.getNom() + " x" + quantite);
+                JLabel prixLabel = new JLabel(String.format("%.2f €", prixTotalArticle));
+                prixLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+
+                ligne.add(nomLabel);
+                ligne.add(prixLabel);
 
                 panel.add(ligne);
+                panel.add(Box.createVerticalStrut(5));
             }
 
-            JLabel totalLabel = new JLabel("Total : " + String.format("%.2f €", total), SwingConstants.CENTER);
-            totalLabel.setFont(new Font("Arial", Font.BOLD, 16));
             panel.add(Box.createVerticalStrut(10));
+
+            JLabel totalLabel = new JLabel("Total : " + String.format("%.2f €", total), SwingConstants.CENTER);
+            totalLabel.setFont(new Font("Arial", Font.BOLD, 18));
+            totalLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             panel.add(totalLabel);
         }
 
-        // Bouton pour vider le panier
-        JButton viderBtn = new JButton("Vider le panier");
-        viderBtn.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this,
-                    "Voulez-vous vraiment vider votre panier ?",
-                    "Confirmation",
-                    JOptionPane.YES_NO_OPTION);
+        panel.add(Box.createVerticalStrut(30));
 
-            if (confirm == JOptionPane.YES_OPTION) {
-                Panier.getInstance().viderPanier();     // Vide en mémoire
-                PanierDAO.viderPanier(idClient);        // Vide en BDD
-                dispose();                              // Ferme la fenêtre actuelle
-                new PanierVue(idClient);                // Recharge la vue vide
-            }
-        });
-
-        panel.add(Box.createVerticalStrut(20));
-        panel.add(viderBtn);
-
-        // Bouton valider commande
+        // Bouton "Valider la commande"
         JButton validerBtn = new JButton("Valider la commande");
+        validerBtn.setFont(new Font("Arial", Font.BOLD, 16));
+        validerBtn.setBackground(new Color(76, 175, 80)); // vert
+        validerBtn.setForeground(Color.WHITE);
+        validerBtn.setFocusPainted(false);
+        validerBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        validerBtn.setPreferredSize(new Dimension(200, 40));
+
         validerBtn.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this,
-                    "Souhaitez-vous valider cette commande ?",
-                    "Confirmation",
-                    JOptionPane.YES_NO_OPTION);
+            FenetrePaiement fenetrePaiement = new FenetrePaiement(() -> {
+                int confirm = JOptionPane.showConfirmDialog(this,
+                        "Souhaitez-vous valider cette commande ?",
+                        "Confirmation",
+                        JOptionPane.YES_NO_OPTION);
 
-            if (confirm == JOptionPane.YES_OPTION) {
-                Map<Article, Integer> panierMap = Panier.getInstance().getArticles();
-                double total = Panier.getInstance().getTotal();
-                CommandeDAO commandeDAO = new CommandeDAO();
-                boolean success = commandeDAO.validerCommande(idClient, panierMap, total);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    Map<Article, Integer> panierMap = Panier.getInstance().getArticles();
+                    double total = Panier.getInstance().getTotal();
+                    CommandeDAO commandeDAO = new CommandeDAO();
+                    boolean success = commandeDAO.validerCommande(idClient, panierMap, total);
 
-                if (success) {
-                    Panier.getInstance().viderPanier();
-                    PanierDAO.viderPanier(idClient);
-                    JOptionPane.showMessageDialog(this, "Commande validée avec succès !");
-                    dispose(); // Fermer la vue panier
-                } else {
-                    JOptionPane.showMessageDialog(this, "Erreur lors de la validation.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    if (success) {
+                        Panier.getInstance().viderPanier();
+                        PanierDAO.viderPanier(idClient);
+                        JOptionPane.showMessageDialog(this, "Commande validée avec succès !");
+                        dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Erreur lors de la validation.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-            }
+            });
+            fenetrePaiement.setVisible(true);
         });
 
-        panel.add(Box.createVerticalStrut(10));
         panel.add(validerBtn);
-
 
         JScrollPane scrollPane = new JScrollPane(panel);
         add(scrollPane);
