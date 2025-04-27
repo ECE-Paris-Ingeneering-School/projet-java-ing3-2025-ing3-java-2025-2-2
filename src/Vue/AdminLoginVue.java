@@ -32,13 +32,30 @@ public class AdminLoginVue extends JFrame {
     }
 
     private void initUI() {
+        // Création du bouton Retour
+        retourButton = new JButton("← Retour");
+        retourButton.setPreferredSize(new Dimension(100, 40));
+        retourButton.setBackground(new Color(34, 139, 34));
+        retourButton.setFont(new Font("Arial", Font.BOLD, 12));
+        retourButton.setForeground(Color.WHITE);
+        retourButton.setFocusPainted(false);
+
+        // Création du titre
         titleLabel = new JLabel("Connexion Administrateur", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
-        titleLabel.setPreferredSize(new Dimension(1000, 60));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        titleLabel.setPreferredSize(new Dimension(800, 60));
 
+        // Message d'information
         messageLabel = new JLabel("", SwingConstants.CENTER);
 
+        // Panel du haut avec retour à gauche et titre au centre
+        JPanel northPanel = new JPanel(new BorderLayout());
+        northPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        northPanel.add(retourButton, BorderLayout.WEST);
+        northPanel.add(titleLabel, BorderLayout.CENTER);
+        northPanel.add(messageLabel, BorderLayout.SOUTH);
+
+        // Centre : formulaire de login
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -51,11 +68,10 @@ public class AdminLoginVue extends JFrame {
 
         loginButton = new JButton("Connexion Admin");
         loginButton.setPreferredSize(new Dimension(200, 40));
+        loginButton.setBackground(new Color(34, 139, 34));
         loginButton.setFont(new Font("Arial", Font.BOLD, 14));
-
-        retourButton = new JButton("Retour Connexion Client");
-        retourButton.setPreferredSize(new Dimension(200, 30));
-        retourButton.setFont(new Font("Arial", Font.BOLD, 12));
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFocusPainted(false);
 
         gbc.insets = new Insets(5, 5, 5, 5);
 
@@ -80,18 +96,11 @@ public class AdminLoginVue extends JFrame {
         gbc.insets = new Insets(20, 5, 5, 5);
         panel.add(loginButton, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.insets = new Insets(10, 5, 5, 5);
-        panel.add(retourButton, gbc);
-
-        JPanel northPanel = new JPanel(new BorderLayout());
-        northPanel.add(titleLabel, BorderLayout.CENTER);
-        northPanel.add(messageLabel, BorderLayout.SOUTH);
+        // Ajout au frame
         add(northPanel, BorderLayout.NORTH);
-
         add(panel, BorderLayout.CENTER);
 
+        // Action des boutons
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -114,11 +123,9 @@ public class AdminLoginVue extends JFrame {
 
         Administrateur admin = controller.seConnecter(email, motDePasse);
         if (admin != null) {
-            // Plus de pop-up de connexion réussie
             dispose();
             new AdminTabVue(admin).setVisible(true);
         } else {
-            // On garde seulement le pop-up d'erreur
             JOptionPane.showMessageDialog(this, "Identifiants invalides.", "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
