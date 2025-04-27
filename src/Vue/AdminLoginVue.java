@@ -32,7 +32,6 @@ public class AdminLoginVue extends JFrame {
     }
 
     private void initUI() {
-        // Création du bouton Retour
         retourButton = new JButton("← Retour");
         retourButton.setPreferredSize(new Dimension(100, 40));
         retourButton.setBackground(new Color(34, 139, 34));
@@ -40,22 +39,18 @@ public class AdminLoginVue extends JFrame {
         retourButton.setForeground(Color.WHITE);
         retourButton.setFocusPainted(false);
 
-        // Création du titre
         titleLabel = new JLabel("Connexion Administrateur", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
         titleLabel.setPreferredSize(new Dimension(800, 60));
 
-        // Message d'information
         messageLabel = new JLabel("", SwingConstants.CENTER);
 
-        // Panel du haut avec retour à gauche et titre au centre
         JPanel northPanel = new JPanel(new BorderLayout());
         northPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         northPanel.add(retourButton, BorderLayout.WEST);
         northPanel.add(titleLabel, BorderLayout.CENTER);
         northPanel.add(messageLabel, BorderLayout.SOUTH);
 
-        // Centre : formulaire de login
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -96,11 +91,9 @@ public class AdminLoginVue extends JFrame {
         gbc.insets = new Insets(20, 5, 5, 5);
         panel.add(loginButton, gbc);
 
-        // Ajout au frame
         add(northPanel, BorderLayout.NORTH);
         add(panel, BorderLayout.CENTER);
 
-        // Action des boutons
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

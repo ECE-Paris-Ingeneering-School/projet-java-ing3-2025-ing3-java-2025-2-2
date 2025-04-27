@@ -6,7 +6,6 @@ import Modele.Administrateur;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.List;
 
@@ -34,7 +33,6 @@ public class AdminTabVue extends JFrame {
     }
 
     private void initUI() {
-        // Menu bar
         JMenuBar menuBar = new JMenuBar();
         menuBar.setLayout(new BoxLayout(menuBar, BoxLayout.X_AXIS));
 
@@ -61,7 +59,6 @@ public class AdminTabVue extends JFrame {
         menuBar.add(searchButton);
         menuBar.add(Box.createHorizontalGlue());
 
-        // Compte admin
         compteMenu = new JMenu("Compte Admin");
         compteMenu.setFont(new Font("Arial", Font.BOLD, 14));
         compteMenu.setForeground(new Color(34, 139, 34));
@@ -74,13 +71,11 @@ public class AdminTabVue extends JFrame {
         menuBar.add(compteMenu);
         setJMenuBar(menuBar);
 
-        // Panel articles
         articlesPanel = new JPanel(new GridLayout(0, 3, 20, 20));
         JScrollPane scrollPane = new JScrollPane(articlesPanel);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         add(scrollPane, BorderLayout.CENTER);
 
-        // Actions
         ajouterButton.addActionListener(e -> ajouterArticle());
 
         searchButton.addActionListener(e -> {
@@ -94,6 +89,7 @@ public class AdminTabVue extends JFrame {
         });
 
         profilItem.addActionListener(e -> {
+            dispose();
             new AdminProfilVue(admin).setVisible(true);
         });
     }
@@ -125,7 +121,6 @@ public class AdminTabVue extends JFrame {
                 panel.add(new JLabel("Erreur chargement image", SwingConstants.CENTER), BorderLayout.CENTER);
             }
 
-            // Clic droit pour modifier ou supprimer
             panel.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     if (SwingUtilities.isRightMouseButton(evt)) {
@@ -151,11 +146,12 @@ public class AdminTabVue extends JFrame {
     }
 
     private void ajouterArticle() {
-        ArticleFormDialog dialog = new ArticleFormDialog(this, null);
+        dispose();
+        ArticleFormVue dialog = new ArticleFormVue(this, null, admin);
         dialog.setVisible(true);
 
-        if (dialog.isValidated()) {
-            Article nouvelArticle = dialog.getArticleFromFields();
+        if (dialog.isValide()) {
+            Article nouvelArticle = dialog.obtenirArticleDesChamps();
             if (articleDAO.ajouterArticle(nouvelArticle)) {
                 JOptionPane.showMessageDialog(this, "Article ajouté !");
                 afficherArticles(articleDAO.listerArticles());
@@ -166,11 +162,12 @@ public class AdminTabVue extends JFrame {
     }
 
     private void modifierArticle(Article article) {
-        ArticleFormDialog dialog = new ArticleFormDialog(this, article);
+        dispose();
+        ArticleFormVue dialog = new ArticleFormVue(this, article, admin);
         dialog.setVisible(true);
 
-        if (dialog.isValidated()) {
-            Article articleModifie = dialog.getArticleFromFields();
+        if (dialog.isValide()) {
+            Article articleModifie = dialog.obtenirArticleDesChamps();
             if (articleDAO.modifierArticle(articleModifie)) {
                 JOptionPane.showMessageDialog(this, "Article modifié !");
                 afficherArticles(articleDAO.listerArticles());
