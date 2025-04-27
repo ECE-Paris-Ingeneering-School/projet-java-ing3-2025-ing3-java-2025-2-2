@@ -7,7 +7,6 @@ import dao.ConnexionBDD;
 import Modele.Session;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,7 +44,6 @@ public class LoginVue extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         panel.setBorder(BorderFactory.createEmptyBorder(20, 150, 20, 150));
 
-        // Champs plus grands
         emailField = new JTextField(25);
         passwordField = new JPasswordField(25);
         emailField.setPreferredSize(new Dimension(300, 30));
@@ -54,17 +52,20 @@ public class LoginVue extends JFrame {
         loginButton = new JButton("Se connecter");
         loginButton.setPreferredSize(new Dimension(200, 40));
         loginButton.setFont(new Font("Arial", Font.BOLD, 14));
+        loginButton.setBackground(new Color(34, 139, 34));
+        loginButton.setForeground(Color.WHITE);
 
-        // Lien d'inscription stylisé
         registerLink = new JLabel("<html><u>Je n'ai pas encore de compte</u></html>");
-        registerLink.setForeground(Color.BLUE);
+        registerLink.setForeground(new Color(34, 139, 34));
         registerLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         adminLink = new JButton("Connexion Admin");
         adminLink.setPreferredSize(new Dimension(200, 30));
+        adminLink.setBackground(new Color(34, 139, 34));
+        adminLink.setForeground(Color.WHITE);
         messageLabel = new JLabel("", SwingConstants.CENTER);
 
-        gbc.insets = new Insets(5, 5, 5, 5); // Espacement entre les composants
+        gbc.insets = new Insets(5, 5, 5, 5);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -82,16 +83,14 @@ public class LoginVue extends JFrame {
         gbc.gridy = 3;
         panel.add(passwordField, gbc);
 
-        // Ajout du lien d'inscription
         gbc.gridx = 0;
         gbc.gridy = 4;
-        gbc.insets = new Insets(15, 5, 5, 5); // Plus d'espace au-dessus
+        gbc.insets = new Insets(15, 5, 5, 5);
         panel.add(registerLink, gbc);
 
-        // Bouton de connexion avec plus d'espace au-dessus
         gbc.gridx = 0;
         gbc.gridy = 5;
-        gbc.insets = new Insets(20, 5, 5, 5); // Encore plus d'espace
+        gbc.insets = new Insets(20, 5, 5, 5);
         panel.add(loginButton, gbc);
 
         JPanel northPanel = new JPanel(new BorderLayout());
