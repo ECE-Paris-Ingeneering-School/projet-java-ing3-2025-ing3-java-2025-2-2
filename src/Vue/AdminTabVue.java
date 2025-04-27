@@ -105,10 +105,11 @@ public class AdminTabVue extends JFrame {
             new AdminProfilVue(admin).setVisible(true);
         });
         statistiquesButton.addActionListener(e -> {
+            dispose();
             ArticleDAO articleDAO = new ArticleDAO();
             List<Article> articles = articleDAO.listerArticles(); // <-- On récupère les articles depuis ta BDD
 
-            StatistiquesVentesVue statistiquesVentesVue = new StatistiquesVentesVue(articles);
+            StatistiquesVentesVue statistiquesVentesVue = new StatistiquesVentesVue(articles, admin);
             statistiquesVentesVue.setVisible(true);
         });
     }

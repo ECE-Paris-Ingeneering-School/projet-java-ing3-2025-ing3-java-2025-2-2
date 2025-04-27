@@ -1,6 +1,8 @@
 package Vue;
 
 import Modele.Article;
+import dao.VenteDAO;
+import Modele.Administrateur;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,12 +10,16 @@ import java.util.List;
 
 public class StatistiquesVentesVue extends JFrame {
     private List<Article> articles;  // Liste des articles pour les stats
+    private VenteDAO venteDAO;  // DAO pour récupérer les ventes de chaque article
+    private Administrateur admin;
 
-    public StatistiquesVentesVue(List<Article> articles) {
+    public StatistiquesVentesVue(List<Article> articles, Administrateur admin) {
         this.articles = articles;
+        this.venteDAO = new VenteDAO();  // Initialise le DAO
+        this.admin = admin;
 
         setTitle("Statistiques de Ventes");
-        setSize(800, 500);
+        setSize(1000, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -23,9 +29,12 @@ public class StatistiquesVentesVue extends JFrame {
 
     private void initUI() {
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton retourButton = new JButton("← Retour");
+        JButton retourButton = new JButton("←");
         styleButton(retourButton);
-        retourButton.addActionListener(e -> dispose());
+        retourButton.addActionListener(e -> {
+            dispose();
+            new AdminTabVue(admin).setVisible(true);
+        });
         topPanel.add(retourButton);
         add(topPanel, BorderLayout.NORTH);
 
@@ -35,6 +44,14 @@ public class StatistiquesVentesVue extends JFrame {
 
         int nombreTotalArticles = articles.size();
         double chiffreAffairesTotal = calculerChiffreAffairesTotal();
+
+        // Calcul des articles les plus et moins vendus
+        Article articlePlusVendu = getArticlePlusVendu();
+        Article articleMoinsVendu = getArticleMoinsVendu();
+
+        // Calcul du nombre de ventes
+        int ventesPlusVendu = (articlePlusVendu != null) ? venteDAO.getQuantiteVendue(articlePlusVendu.getIdArticle()) : 0;
+        int ventesMoinsVendu = (articleMoinsVendu != null) ? venteDAO.getQuantiteVendue(articleMoinsVendu.getIdArticle()) : 0;
 
         JLabel titreLabel = new JLabel("Statistiques Globales");
         titreLabel.setFont(new Font("Arial", Font.BOLD, 22));
@@ -48,11 +65,24 @@ public class StatistiquesVentesVue extends JFrame {
         chiffreAffairesLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         chiffreAffairesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // Ajouter les statistiques des articles les plus et moins vendus
+        JLabel plusVenduLabel = new JLabel("Article le plus vendu : " + (articlePlusVendu != null ? articlePlusVendu.getNom() + " (" + ventesPlusVendu + " ventes)" : "Aucun"));
+        plusVenduLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        plusVenduLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel moinsVenduLabel = new JLabel("Article le moins vendu : " + (articleMoinsVendu != null ? articleMoinsVendu.getNom() + " (" + ventesMoinsVendu + " ventes)" : "Aucun"));
+        moinsVenduLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        moinsVenduLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         statsPanel.add(titreLabel);
         statsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         statsPanel.add(nbArticlesLabel);
         statsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         statsPanel.add(chiffreAffairesLabel);
+        statsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        statsPanel.add(plusVenduLabel);
+        statsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        statsPanel.add(moinsVenduLabel);
 
         add(statsPanel, BorderLayout.CENTER);
     }
@@ -63,6 +93,36 @@ public class StatistiquesVentesVue extends JFrame {
             total += article.getPrix_unitaire() * article.getQte_vrac();
         }
         return total;
+    }
+
+    // Méthode pour obtenir l'article le plus vendu
+    private Article getArticlePlusVendu() {
+        Article articlePlusVendu = null;
+        int maxVentes = -1;
+
+        for (Article article : articles) {
+            int quantiteVendue = venteDAO.getQuantiteVendue(article.getIdArticle());
+            if (quantiteVendue > maxVentes) {
+                maxVentes = quantiteVendue;
+                articlePlusVendu = article;
+            }
+        }
+        return articlePlusVendu;
+    }
+
+    // Méthode pour obtenir l'article le moins vendu
+    private Article getArticleMoinsVendu() {
+        Article articleMoinsVendu = null;
+        int minVentes = Integer.MAX_VALUE;
+
+        for (Article article : articles) {
+            int quantiteVendue = venteDAO.getQuantiteVendue(article.getIdArticle());
+            if (quantiteVendue < minVentes) {
+                minVentes = quantiteVendue;
+                articleMoinsVendu = article;
+            }
+        }
+        return articleMoinsVendu;
     }
 
     private void styleButton(JButton button) {
