@@ -81,7 +81,6 @@ public class ArticleDetailVue extends JFrame {
         detailPanel.add(marqueBtn);
 
         detailPanel.add(Box.createVerticalStrut(10));
-
         JTextArea description = new JTextArea(article.getDescription());
         description.setLineWrap(true);
         description.setWrapStyleWord(true);
