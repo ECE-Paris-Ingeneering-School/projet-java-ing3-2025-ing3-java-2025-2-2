@@ -10,10 +10,22 @@ import java.awt.*;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * Classe HistoriqueCommandeVue
+ * Affiche l'historique des commandes passées par un client
+ * Partie de la vue dans l'architecture MVC
+ * Source : <a href="https://grafikart.fr/tutoriels/mvc-model-view-controller-574">Grafikart - Comprendre le modèle MVC</a>
+ * @author Martin
+ */
 public class HistoriqueCommandeVue extends JFrame {
     private int idClient;
     private JFrame previousFrame;
 
+    /**
+     * Constructeur de HistoriqueCommandeVue
+     * @param idClient identifiant du client connecté
+     * @param previousFrame fenêtre précédente à rouvrir lors du retour
+     */
     public HistoriqueCommandeVue(int idClient, JFrame previousFrame) {
         this.idClient = idClient;
         this.previousFrame = previousFrame;
@@ -39,7 +51,7 @@ public class HistoriqueCommandeVue extends JFrame {
             commandesPanel.add(videLabel);
         } else {
             for (Commande commande : commandes) {
-                double totalCommande = 0.0; // Initialisation du total de la commande
+                double totalCommande = 0.0;
 
                 JPanel commandePanel = new JPanel();
                 commandePanel.setLayout(new BoxLayout(commandePanel, BoxLayout.Y_AXIS));
@@ -51,20 +63,18 @@ public class HistoriqueCommandeVue extends JFrame {
                 JLabel titreCommande = new JLabel("Commande du " + commande.getDateCommande().toLocalDate());
                 titreCommande.setFont(new Font("Arial", Font.BOLD, 16));
                 commandePanel.add(titreCommande);
-
                 commandePanel.add(Box.createVerticalStrut(10));
 
                 for (CommandeArticle commandeArticle : commande.getArticles()) {
                     JPanel articlePanel = new JPanel(new BorderLayout(5, 5));
                     Article article = commandeArticle.getArticle();
 
-                    // Récupération du prix total de l'article dans la commande
                     double prixTotalArticle = commandeArticle.getPrixTotal();
-                    totalCommande += prixTotalArticle;  // Ajout au total de la commande
+                    totalCommande += prixTotalArticle;
 
                     JLabel nomLabel = new JLabel(
-                            article.getNom() +
-                                    " (" + String.format("%.2f €", article.getPrix_unitaire()) +
+                            article.getNom() + " (" +
+                                    String.format("%.2f €", article.getPrix_unitaire()) +
                                     ") x " + commandeArticle.getQuantite() +
                                     " = " + String.format("%.2f €", prixTotalArticle)
                     );
@@ -78,8 +88,7 @@ public class HistoriqueCommandeVue extends JFrame {
                             JLabel imgLabel = new JLabel(new ImageIcon(img));
                             articlePanel.add(imgLabel, BorderLayout.WEST);
                         } else {
-                            JLabel imgLabel = new JLabel("Image non trouvée");
-                            articlePanel.add(imgLabel, BorderLayout.WEST);
+                            articlePanel.add(new JLabel("Image non trouvée"), BorderLayout.WEST);
                         }
                     } catch (Exception e) {
                         articlePanel.add(new JLabel("Erreur image"), BorderLayout.WEST);
@@ -90,7 +99,6 @@ public class HistoriqueCommandeVue extends JFrame {
                     commandePanel.add(Box.createVerticalStrut(5));
                 }
 
-                // Ajout du total de la commande
                 JLabel totalCommandeLabel = new JLabel("Total de la commande : " + String.format("%.2f €", totalCommande));
                 totalCommandeLabel.setFont(new Font("Arial", Font.BOLD, 14));
                 totalCommandeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);

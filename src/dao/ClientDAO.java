@@ -7,8 +7,7 @@ import java.sql.*;
  * Classe ClientDAO
  * Gère l'accès aux données pour les opérations liées aux clients dans la base de données
  * Suivant le modèle DAO pour bien séparer la logique d'accès aux données
- * Source : <a href="https://www.baeldung.com/java-dao-pattern">Baeldung - DAO Pattern</a>
- * @author Martin
+ * Source : <a href="https://openclassrooms.com/fr/courses/4670706-adoptez-une-architecture-mvc-en-php/7847928-decouvrez-comment-fonctionne-une-architecture-mvc">OpenClassrooms - Adoptez une architecture MVC</a> * @author Martin
  */
 public class ClientDAO {
 

@@ -6,10 +6,21 @@ import dao.ClientDAO;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Classe ProfilVue
+ * Fenêtre permettant d'afficher et de modifier les informations personnelles d'un client
+ * Partie de la vue dans l'architecture MVC
+ * Source : <a href="https://openclassrooms.com/fr/courses/4670706-adoptez-une-architecture-mvc-en-php/7847928-decouvrez-comment-fonctionne-une-architecture-mvc">OpenClassrooms - Adoptez une architecture MVC</a>
+ * @author Jean
+ */
 public class ProfilVue extends JFrame {
     private int idClient;
     private Client client;
 
+    /**
+     * Constructeur de ProfilVue
+     * @param idClient identifiant du client connecté
+     */
     public ProfilVue(int idClient) {
         this.idClient = idClient;
         ClientDAO clientDAO = new ClientDAO();
@@ -35,9 +46,7 @@ public class ProfilVue extends JFrame {
         });
         topPanel.add(retourBtn);
         mainPanel.add(topPanel);
-
         mainPanel.add(Box.createVerticalStrut(20));
-
 
         if (client != null) {
             JPanel infoPanel = new JPanel(new GridLayout(5, 2, 10, 10));
@@ -54,8 +63,7 @@ public class ProfilVue extends JFrame {
             infoPanel.add(new JLabel("Email :"));
             infoPanel.add(new JLabel(client.getEmail()));
 
-            JPanel centeredPanel = new JPanel();
-            centeredPanel.setLayout(new BorderLayout());
+            JPanel centeredPanel = new JPanel(new BorderLayout());
             centeredPanel.add(infoPanel, BorderLayout.CENTER);
 
             mainPanel.add(centeredPanel);
@@ -64,9 +72,7 @@ public class ProfilVue extends JFrame {
             modifierBtn.setBackground(new Color(34, 139, 34));
             modifierBtn.setForeground(Color.WHITE);
             modifierBtn.setFocusPainted(false);
-            modifierBtn.addActionListener(e -> {
-                afficherFormulaireModification();
-            });
+            modifierBtn.addActionListener(e -> afficherFormulaireModification());
             mainPanel.add(modifierBtn);
         } else {
             JOptionPane.showMessageDialog(this, "Erreur : client introuvable.", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -83,6 +89,9 @@ public class ProfilVue extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Affiche un formulaire pour modifier les informations du client
+     */
     private void afficherFormulaireModification() {
         JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));

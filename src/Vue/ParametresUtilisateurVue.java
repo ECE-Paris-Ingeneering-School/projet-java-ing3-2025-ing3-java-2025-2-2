@@ -3,7 +3,19 @@ package Vue;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Classe ParametresUtilisateurVue
+ * Fenêtre permettant à l'utilisateur de consulter et modifier ses paramètres personnels
+ * Partie de la vue dans l'architecture MVC
+ * Source : <a href="https://openclassrooms.com/fr/courses/4670706-adoptez-une-architecture-mvc-en-php/7847928-decouvrez-comment-fonctionne-une-architecture-mvc">OpenClassrooms - Adoptez une architecture MVC</a>
+ * @author Alice
+ */
 public class ParametresUtilisateurVue extends JFrame {
+
+    /**
+     * Constructeur de ParametresUtilisateurVue
+     * @param idClient identifiant du client connecté
+     */
     public ParametresUtilisateurVue(int idClient) {
         setTitle("Paramètres du compte");
         setSize(400, 300);
@@ -12,7 +24,6 @@ public class ParametresUtilisateurVue extends JFrame {
         JPanel panel = new JPanel(new GridLayout(5, 2, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Champs éditables
         panel.add(new JLabel("Nom:"));
         panel.add(new JTextField("Dupont"));
 
@@ -25,7 +36,6 @@ public class ParametresUtilisateurVue extends JFrame {
         panel.add(new JLabel("Mot de passe:"));
         panel.add(new JPasswordField());
 
-        // Boutons
         JButton btnSave = new JButton("Enregistrer");
         JButton btnCancel = new JButton("Annuler");
 

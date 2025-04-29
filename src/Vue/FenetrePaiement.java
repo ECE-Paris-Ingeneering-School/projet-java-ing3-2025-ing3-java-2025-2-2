@@ -5,6 +5,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Classe FenetrePaiement
+ * Fenêtre permettant la saisie sécurisée des informations de paiement utilisateur
+ * Partie de la vue dans l'architecture MVC
+ * Source : <a href="https://grafikart.fr/tutoriels/mvc-model-view-controller-574">Grafikart - Comprendre le modèle MVC</a>
+ * @author Jean
+ */
 public class FenetrePaiement extends JFrame {
 
     private JTextField numeroCarteField;
@@ -12,6 +19,10 @@ public class FenetrePaiement extends JFrame {
     private JTextField cvvField;
     private JButton payerButton;
 
+    /**
+     * Constructeur de la fenêtre de paiement
+     * @param onPaiementValide action à exécuter lorsque le paiement est validé
+     */
     public FenetrePaiement(Runnable onPaiementValide) {
         setTitle("Paiement sécurisé");
         initComponents(onPaiementValide);
@@ -21,20 +32,20 @@ public class FenetrePaiement extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
+    /**
+     * Initialise les composants graphiques de la fenêtre
+     * @param onPaiementValide action à exécuter après validation du formulaire
+     */
     private void initComponents(Runnable onPaiementValide) {
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout(10, 10));
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // Titre
         JLabel titre = new JLabel("Veuillez entrer vos informations bancaires");
         titre.setFont(new Font("Arial", Font.BOLD, 16));
         titre.setHorizontalAlignment(SwingConstants.CENTER);
         mainPanel.add(titre, BorderLayout.NORTH);
 
-        // Centre - Champs
-        JPanel champsPanel = new JPanel();
-        champsPanel.setLayout(new GridBagLayout());
+        JPanel champsPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -65,7 +76,6 @@ public class FenetrePaiement extends JFrame {
 
         mainPanel.add(champsPanel, BorderLayout.CENTER);
 
-        // Bas - Bouton Payer
         payerButton = new JButton("Payer");
         payerButton.setFont(new Font("Arial", Font.BOLD, 14));
         payerButton.setBackground(new Color(76, 175, 80));
@@ -80,13 +90,10 @@ public class FenetrePaiement extends JFrame {
                 String expiration = expirationField.getText().trim();
                 String cvv = cvvField.getText().trim();
 
-                // Vérification basique : 16 chiffres pour la carte
                 if (numeroCarte.length() != 16 || !numeroCarte.matches("\\d{16}")) {
                     JOptionPane.showMessageDialog(FenetrePaiement.this, "Paiement refusé : numéro de carte invalide.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                    return; // Ne continue pas
+                    return;
                 }
-
-                // (Optionnel : tu pourrais aussi vérifier expiration et cvv si tu veux)
 
                 if (onPaiementValide != null) {
                     onPaiementValide.run();

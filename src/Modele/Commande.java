@@ -7,8 +7,7 @@ import java.util.List;
  * Classe Commande
  * Représente une commande passée par un client, contenant plusieurs articles
  * Partie du modèle dans l'architecture MVC
- * Source : <a href="https://baptiste-wicht.developpez.com/tutoriels/conception/mvc/">Baptiste Wicht - Développement de l'architecture MVC</a>
- * @author Quentin
+ * Source : <a href="https://openclassrooms.com/fr/courses/4670706-adoptez-une-architecture-mvc-en-php/7847928-decouvrez-comment-fonctionne-une-architecture-mvc">OpenClassrooms - Adoptez une architecture MVC</a> * @author Quentin
  */
 public class Commande {
     private int idCommande;

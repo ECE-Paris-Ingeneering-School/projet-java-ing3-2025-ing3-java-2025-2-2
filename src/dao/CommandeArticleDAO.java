@@ -12,8 +12,7 @@ import Modele.Article;
  * Classe CommandeArticleDAO
  * Gère les opérations entre les commandes et les articles (relation commande-article)
  * Implémente les actions CRUD sur la table de liaison commande_article
- * Source : <a href="https://www.baeldung.com/java-dao-pattern">Baeldung - DAO Pattern</a>
- * @author Quentin
+ * Source : <a href="https://openclassrooms.com/fr/courses/4670706-adoptez-une-architecture-mvc-en-php/7847928-decouvrez-comment-fonctionne-une-architecture-mvc">OpenClassrooms - Adoptez une architecture MVC</a> * @author Quentin
  */
 public class CommandeArticleDAO {
 

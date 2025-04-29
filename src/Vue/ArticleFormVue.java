@@ -6,9 +6,14 @@ import Modele.Marque;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
+/**
+ * Classe ArticleFormVue
+ * Fenêtre permettant d'ajouter ou de modifier un article via un formulaire
+ * Partie de la vue dans l'architecture MVC
+ * Source : <a href="https://grafikart.fr/tutoriels/mvc-model-view-controller-574">Grafikart - Comprendre le modèle MVC</a>
+ * @author Alice
+ */
 public class ArticleFormVue extends JDialog {
     private JTextField nomChamp;
     private JTextArea descriptionArea;
@@ -20,10 +25,15 @@ public class ArticleFormVue extends JDialog {
     private JButton sauvegarderButton;
     private JButton retourButton;
     private Administrateur admin;
-
     private Article article;
     private boolean valide = false;
 
+    /**
+     * Constructeur de la fenêtre de formulaire d'article
+     * @param parent fenêtre parent
+     * @param article article à modifier, ou null pour un ajout
+     * @param admin administrateur connecté
+     */
     public ArticleFormVue(Frame parent, Article article, Administrateur admin) {
         super(parent, true);
         this.admin = admin;
@@ -37,6 +47,9 @@ public class ArticleFormVue extends JDialog {
         }
     }
 
+    /**
+     * Initialise les composants graphiques de la fenêtre
+     */
     private void initUI() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -142,12 +155,15 @@ public class ArticleFormVue extends JDialog {
         retourButton.addActionListener(e -> {
             AdminTabVue adminTabVue = new AdminTabVue(admin);
             adminTabVue.setVisible(true);
-
             dispose();
             adminTabVue.toFront();
         });
     }
 
+    /**
+     * Applique un style vert personnalisé aux boutons
+     * @param button bouton à styler
+     */
     private void styleButton(JButton button) {
         button.setBackground(new Color(34, 139, 34));
         button.setFont(new Font("Arial", Font.BOLD, 14));
@@ -155,6 +171,10 @@ public class ArticleFormVue extends JDialog {
         button.setFocusPainted(false);
     }
 
+    /**
+     * Remplit les champs du formulaire avec les données d'un article existant
+     * @param art article à afficher
+     */
     private void remplirChamps(Article art) {
         nomChamp.setText(art.getNom());
         descriptionArea.setText(art.getDescription());
@@ -165,10 +185,18 @@ public class ArticleFormVue extends JDialog {
         photoChamp.setText(art.getPhoto());
     }
 
+    /**
+     * Vérifie si l'enregistrement du formulaire a été validé
+     * @return true si valide, false sinon
+     */
     public boolean isValide() {
         return valide;
     }
 
+    /**
+     * Crée un nouvel objet Article à partir des champs du formulaire
+     * @return objet Article
+     */
     public Article obtenirArticleDesChamps() {
         String nom = nomChamp.getText();
         String description = descriptionArea.getText();

@@ -8,11 +8,23 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Classe StatistiquesVentesVue
+ * Fenêtre affichant les statistiques de ventes globales pour les articles
+ * Partie de la vue dans l'architecture MVC
+ * Source : <a href="https://openclassrooms.com/fr/courses/4670706-adoptez-une-architecture-mvc-en-php/7847928-decouvrez-comment-fonctionne-une-architecture-mvc">OpenClassrooms - Adoptez une architecture MVC</a>
+ * @author Quentin
+ */
 public class StatistiquesVentesVue extends JFrame {
     private List<Article> articles;
     private VenteDAO venteDAO;
     private Administrateur admin;
 
+    /**
+     * Constructeur de StatistiquesVentesVue
+     * @param articles liste des articles disponibles
+     * @param admin administrateur connecté
+     */
     public StatistiquesVentesVue(List<Article> articles, Administrateur admin) {
         this.articles = articles;
         this.venteDAO = new VenteDAO();
@@ -27,6 +39,9 @@ public class StatistiquesVentesVue extends JFrame {
         initUI();
     }
 
+    /**
+     * Initialise les composants graphiques de la fenêtre
+     */
     private void initUI() {
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton retourButton = new JButton("←");
@@ -44,7 +59,6 @@ public class StatistiquesVentesVue extends JFrame {
 
         int nombreTotalArticles = articles.size();
         double chiffreAffairesTotal = calculerChiffreAffairesTotal();
-
         Article articlePlusVendu = getArticlePlusVendu();
         Article articleMoinsVendu = getArticleMoinsVendu();
 
@@ -84,6 +98,10 @@ public class StatistiquesVentesVue extends JFrame {
         add(statsPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Calcule le chiffre d'affaires total estimé
+     * @return chiffre d'affaires total
+     */
     private double calculerChiffreAffairesTotal() {
         double total = 0;
         for (Article article : articles) {
@@ -92,6 +110,10 @@ public class StatistiquesVentesVue extends JFrame {
         return total;
     }
 
+    /**
+     * Récupère l'article ayant réalisé le plus de ventes
+     * @return article le plus vendu
+     */
     private Article getArticlePlusVendu() {
         Article articlePlusVendu = null;
         int maxVentes = -1;
@@ -106,6 +128,10 @@ public class StatistiquesVentesVue extends JFrame {
         return articlePlusVendu;
     }
 
+    /**
+     * Récupère l'article ayant réalisé le moins de ventes
+     * @return article le moins vendu
+     */
     private Article getArticleMoinsVendu() {
         Article articleMoinsVendu = null;
         int minVentes = Integer.MAX_VALUE;
@@ -120,6 +146,10 @@ public class StatistiquesVentesVue extends JFrame {
         return articleMoinsVendu;
     }
 
+    /**
+     * Applique un style uniforme aux boutons
+     * @param button bouton à styliser
+     */
     private void styleButton(JButton button) {
         button.setBackground(new Color(34, 139, 34));
         button.setForeground(Color.WHITE);

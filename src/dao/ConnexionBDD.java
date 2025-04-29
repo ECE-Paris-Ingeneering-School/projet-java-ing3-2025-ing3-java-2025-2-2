@@ -8,8 +8,7 @@ import java.sql.SQLException;
  * Classe ConnexionBDD
  * Gère la connexion unique à la base de données MySQL pour toute l'application
  * Implémente un modèle Singleton pour assurer une seule connexion active
- * Source : <a href="https://www.baeldung.com/java-dao-pattern">Baeldung - DAO Pattern</a>
- * @author Jean
+ * Source : <a href="https://openclassrooms.com/fr/courses/4670706-adoptez-une-architecture-mvc-en-php/7847928-decouvrez-comment-fonctionne-une-architecture-mvc">OpenClassrooms - Adoptez une architecture MVC</a> * @author Jean
  */
 public class ConnexionBDD {
     private static final String URL = "jdbc:mysql://localhost:3306/shopping";

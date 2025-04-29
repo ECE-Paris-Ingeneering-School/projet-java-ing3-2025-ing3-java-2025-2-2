@@ -11,14 +11,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 
+/**
+ * Classe PanierVue
+ * Fenêtre affichant le contenu du panier du client et permettant de valider ou vider les articles
+ * Partie de la vue dans l'architecture MVC
+ * Source : <a href="https://grafikart.fr/tutoriels/mvc-model-view-controller-574">Grafikart - Comprendre le modèle MVC</a>
+ * @author Quentin
+ */
 public class PanierVue extends JFrame {
 
     private JPanel panel;
-    private double total;  // Déclaration de total comme attribut de la classe
+    private double total;
 
+    /**
+     * Constructeur de PanierVue
+     * @param idClient identifiant du client connecté
+     */
     public PanierVue(int idClient) {
         setTitle("Mon Panier");
-        setSize(1000, 600); // Même taille que le Menu
+        setSize(1000, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -34,13 +45,17 @@ public class PanierVue extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Affiche le contenu du panier du client
+     * @param idClient identifiant du client
+     */
     private void afficherPanier(int idClient) {
         panel.removeAll();
 
         Map<Article, Integer> panier = PanierDAO.getPanier(idClient);
         Panier.getInstance().setArticles(panier);
 
-        total = 0.0;  // Réinitialisation du total
+        total = 0.0;
 
         if (panier.isEmpty()) {
             JLabel videLabel = new JLabel("Votre panier est vide.");
@@ -52,7 +67,6 @@ public class PanierVue extends JFrame {
                 Article article = entry.getKey();
                 int quantite = entry.getValue();
 
-                // Calcul du prix total avec réduction
                 int lotsComplets = quantite / article.getQte_vrac();
                 int reste = quantite % article.getQte_vrac();
                 double prixTotalArticle = lotsComplets * article.getQte_vrac() * article.getPrix_vrac() + reste * article.getPrix_unitaire();
@@ -87,7 +101,6 @@ public class PanierVue extends JFrame {
 
             panel.add(Box.createVerticalStrut(10));
 
-            // Total après réduction
             JLabel totalLabel = new JLabel("Total : " + String.format("%.2f €", total), SwingConstants.CENTER);
             totalLabel.setFont(new Font("Arial", Font.BOLD, 18));
             totalLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -114,13 +127,12 @@ public class PanierVue extends JFrame {
                 if (success) {
                     Panier.getInstance().viderPanier();
                     PanierDAO.viderPanier(idClient);
-                    dispose(); // Fermer le panier
-                    new HistoriqueCommandeVue(idClient, new ArticleVue(idClient)); // 👉 Ouvrir l'historique de commande
+                    dispose();
+                    new HistoriqueCommandeVue(idClient, new ArticleVue(idClient));
                 }
             });
             fenetrePaiement.setVisible(true);
         });
-
 
         JButton viderBtn = new JButton("Vider le Panier");
         viderBtn.setFont(new Font("Arial", Font.BOLD, 16));
